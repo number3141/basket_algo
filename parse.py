@@ -56,10 +56,15 @@ def calculatePoint(*team):
   # team -> ([25, 29, 39, 25], [28, 34, 14, 31])
   homePoint, alowePoint = team
   winnerList = MaxPointInTime(homePoint, alowePoint)
-  if all([winnerList[0] == winnerList[1], any([winnerList[1] != winnerList [2], winnerList[1] != winnerList[3]])]):
-    return f'Работает'   
+  if winnerList[0] == winnerList[1]:
+    if winnerList[0] != winnerList[2]:
+      return f'Заход_3'
+    elif winnerList[0] != winnerList[3]:
+      return f'Заход_4'
+    else:
+      return f'Поражение'
   else: 
-    return f'Не работает'
+    return f'Не подошёл'
     
 
 
