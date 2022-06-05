@@ -91,7 +91,7 @@ def saveToExcel(nameList, pointList, result):
     '2':[pointList[0][1], pointList[1][1]], 
     '3':[pointList[0][2], pointList[1][2]], 
     '4':[pointList[0][3], pointList[1][3]], 
-    'Результат': [str(result), '']
+    'Результат': [str(result), str(result)]
   })
   new = pandas.concat([oldAr, data], ignore_index=True)
   new.to_excel('./teams.xlsx', index=False)
