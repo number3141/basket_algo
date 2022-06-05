@@ -13,15 +13,19 @@ import pandas
 
 fileBask = open('bask.html', 'r', encoding='utf-8')
 
-
 soup = BeautifulSoup(fileBask, 'lxml')
-# Все матчи
-allMatch = soup.find_all('div', class_ = 'event__match')
-# Конечный
-stopMatch = soup.find('div', class_='event__match--last')
-# Склеенный массив 
-findMatch = [stopMatch] + list(stopMatch.find_all_previous('div', class_ = 'event__match'))
 
+def findStopMatch(data):
+  """Получает дату и находит последний матч, перебирая все популярыне времена"""
+  timeList = ['01:00', '01:30', '02:30', '02:30', '03:00', '03:30', '04:00', '04:30', '05:00', '05:30', '06:00', '06:30', '07:00', '07:30', '08:00', '08:30', '09:00', '09:30']
+  for time in timeList: 
+    # Первый родитель - блок data, второй - само событие. Поэтому parent.parent
+    try: 
+      stopMatch = soup.find(string=f"{data} {time}").parent.parent
+      if stopMatch: 
+        return stopMatch
+    except: 
+      continue
 
 def cutPoint(match): 
   """Получает один матч и возвращает очки хозяев и гостей
@@ -65,8 +69,6 @@ def calculatePoint(*team):
       return f'Поражение'
   else: 
     return f'Не подошёл'
-    
-
 
 def MaxPointInTime(home, alowe): 
   """Определяет победителя в каждом тайме"""
@@ -78,9 +80,7 @@ def MaxPointInTime(home, alowe):
       winnerList.append('alowe')
   return winnerList
 
-  
 # Сохранение файлов в Excel 
-
 def saveToExcel(nameList, pointList, result):
   oldAr = pandas.read_excel('./teams.xlsx')
   # data = pandas.DataFrame(columns = ['Дата', 'Команды', '1', '2', '3', '4', 'Итог'])
@@ -102,10 +102,16 @@ def saveToExcel(nameList, pointList, result):
   # pd.concat([df1, df2], ignore_index=True)
 
 
+# Все матчи
+allMatch = soup.find_all('div', class_ = 'event__match')
+# Конечный
+findData = input('Введите дату в формате "00.00."')
+stopMatch = findStopMatch(findData)
+# Склеенный массив 
+findMatch = [stopMatch] + list(stopMatch.find_all_previous('div', class_ = 'event__match'))
+
 for item in findMatch: 
-  # nameTeam(item)
-  # print(*cutPoint(item))
-  # print(calculatePoint(*cutPoint(item)))
   point = cutPoint(item)
   saveToExcel(nameTeam(item), point, calculatePoint(*point))
 
+print('Готово!')
