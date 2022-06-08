@@ -24,4 +24,13 @@ sortedTeam = {}
 for item in sortedKey:
   sortedTeam[item] = teamDict[item]
 
-print(sortedTeam) 
+
+filAl = {
+  'Команды': list(sortedTeam.keys()), 
+  'Кол-во отыгрышей': list(sortedTeam.values())
+}
+
+
+data = pandas.DataFrame(filAl)
+
+data.to_excel('freq.xlsx', index=False)
