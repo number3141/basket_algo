@@ -1,10 +1,10 @@
 from bs4 import BeautifulSoup
 import re
 import pandas
-from findItem import returnAllMatch
-from parseInHTML import parseList
+from findItem import returnAllFindMatch
+from parseInHTML import parsePageInHTML
 # Парсим страницу в HTML
-parseList()
+parsePageInHTML()
 
 def cutPoint(match): 
   """Получает один матч и возвращает очки хозяев и гостей
@@ -62,7 +62,6 @@ def MaxPointInTime(home, alowe):
 # Сохранение файлов в Excel 
 def saveToExcel(nameList, pointList, result):
   oldAr = pandas.read_excel('./teams.xlsx')
-  # data = pandas.DataFrame(columns = ['Дата', 'Команды', '1', '2', '3', '4', 'Итог'])
   data = pandas.DataFrame({
     'Дата': ['30.05.2022', '0'],
     'Команды':[nameList[0], nameList[1]],
@@ -74,13 +73,10 @@ def saveToExcel(nameList, pointList, result):
   })
   new = pandas.concat([oldAr, data], ignore_index=True)
   new.to_excel('./teams.xlsx', index=False)
-  # print(nameList)
   print(pointList)
-  # print(result)
 
-  # pd.concat([df1, df2], ignore_index=True)
+allMatch = returnAllFindMatch()
 
-allMatch = returnAllMatch()
 for item in allMatch: 
   point = cutPoint(item)
   saveToExcel(nameTeam(item), point, calculatePoint(*point))
