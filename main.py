@@ -1,31 +1,10 @@
 from bs4 import BeautifulSoup
-from webdriver_manager.chrome import ChromeDriverManager
-from selenium import webdriver
 import re
 import pandas
-
-# driver = webdriver.Chrome(ChromeDriverManager().install())
-# driver.get('https://www.flashscore.com.ua/basketball/usa/nba/results/')
-
-# fileBask = open('bask.html', 'w', encoding='utf-8')
-# fileBask.write(driver.page_source)
-# fileBask.close()
-
-fileBask = open('bask.html', 'r', encoding='utf-8')
-
-soup = BeautifulSoup(fileBask, 'lxml')
-
-def findStopMatch(data):
-  """Получает дату и находит последний матч, перебирая все популярыне времена"""
-  timeList = ['01:00', '01:30', '02:30', '02:30', '03:00', '03:30', '04:00', '04:30', '05:00', '05:30', '06:00', '06:30', '07:00', '07:30', '08:00', '08:30', '09:00', '09:30']
-  for time in timeList: 
-    # Первый родитель - блок data, второй - само событие. Поэтому parent.parent
-    try: 
-      stopMatch = soup.find(string=f"{data} {time}").parent.parent
-      if stopMatch: 
-        return stopMatch
-    except: 
-      continue
+from findItem import returnAllMatch
+from parseInHTML import parseList
+# Парсим страницу в HTML
+parseList()
 
 def cutPoint(match): 
   """Получает один матч и возвращает очки хозяев и гостей
@@ -101,16 +80,8 @@ def saveToExcel(nameList, pointList, result):
 
   # pd.concat([df1, df2], ignore_index=True)
 
-
-# Все матчи
-allMatch = soup.find_all('div', class_ = 'event__match')
-# Конечный
-findData = input('Введите дату в формате "00.00."')
-stopMatch = findStopMatch(findData)
-# Склеенный массив 
-findMatch = [stopMatch] + list(stopMatch.find_all_previous('div', class_ = 'event__match'))
-
-for item in findMatch: 
+allMatch = returnAllMatch()
+for item in allMatch: 
   point = cutPoint(item)
   saveToExcel(nameTeam(item), point, calculatePoint(*point))
 
