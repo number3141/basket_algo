@@ -14,7 +14,6 @@ for item in range(len(fileTeam)):
   else: 
     teamDict[fileTeam['Команды'][item]] = 1
 
-
 # Сортировка массива 
 
 sortedKey = sorted(teamDict, key=teamDict.get)
