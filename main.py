@@ -1,7 +1,6 @@
-from bs4 import BeautifulSoup
 import re
 import pandas
-from findItem import returnAllFindMatch
+from findItem import returnAllFoundMatches
 from parseInHTML import parsePageInHTML
 # Парсим страницу в HTML
 parsePageInHTML()
@@ -34,11 +33,11 @@ def nameTeam(match):
   awayTeam = match.find('div', class_='event__participant--away').text
   return homeTeam, awayTeam 
 
-def calculatePoint(*team):
+def calcResult(*team):
   """Получает кортеж с двумя листами и вызывает MaxPointInTime"""
   # team -> ([25, 29, 39, 25], [28, 34, 14, 31])
   homePoint, alowePoint = team
-  winnerList = MaxPointInTime(homePoint, alowePoint)
+  winnerList = winnerInTime(homePoint, alowePoint)
   if winnerList[0] == winnerList[1]:
     if winnerList[0] != winnerList[2]:
       return f'Заход_3'
@@ -49,8 +48,10 @@ def calculatePoint(*team):
   else: 
     return f'Не подошёл'
 
-def MaxPointInTime(home, alowe): 
-  """Определяет победителя в каждом тайме"""
+def winnerInTime(home, alowe): 
+  """Определяет победителя в каждом тайме
+    Возвращаемое значение - ['home', 'home', 'alowe', 'alowe']
+  """
   winnerList = []
   for i in range(len(home)): 
     if home[i] > alowe[i]: 
@@ -75,10 +76,12 @@ def saveToExcel(nameList, pointList, result):
   new.to_excel('./teams.xlsx', index=False)
   print(pointList)
 
-allMatch = returnAllFindMatch()
+allMatch = returnAllFoundMatches()
 
 for item in allMatch: 
   point = cutPoint(item)
-  saveToExcel(nameTeam(item), point, calculatePoint(*point))
+  names = nameTeam(item)
+  winnerList = calcResult(*point)
+  saveToExcel(names, point, winnerList)
 
 print('Готово!')

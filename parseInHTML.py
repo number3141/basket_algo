@@ -9,3 +9,4 @@ def parsePageInHTML():
   fileBask.write(driver.page_source)
   fileBask.close()
 
+

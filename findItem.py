@@ -35,7 +35,7 @@ def findStopMatch(data, html):
     except: 
       continue
 
-def returnAllFindMatch():
+def returnAllFoundMatches():
   fileBask = open('bask.html', 'r', encoding='utf-8')
   soup = BeautifulSoup(fileBask, 'lxml')
   userData = input('Введите дату в формате XX.XX (31.12)')
