@@ -42,7 +42,6 @@ def returnAllFoundMatches():
   while True: 
     """Пока не найдёт ближайшие матчи - будет уменьшать дату"""
     stopMatch = findStopMatch(userData, soup)
-    # print(f'Проверяю матч с датой {userData}')
     if stopMatch: 
       # Склеенный массив 
       findMatch = [stopMatch] + list(stopMatch.find_all_previous('div', class_ = 'event__match'))

@@ -7,7 +7,7 @@ def saveResultInExcel(nameList, pointList, result):
     result - 'итог'
     И сохраняет в Excel
   """
-  oldAr = pandas.read_excel('./teams.xlsx')
+  oldAr = pandas.read_excel('./teams.xlsx', engine='openpyxl')
   data = pandas.DataFrame({
     'Дата': ['30.05.2022', '0'],
     'Команды':[nameList[0], nameList[1]],

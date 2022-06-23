@@ -1,4 +1,6 @@
 """Файлы, связанные с работой с данными"""
 
 from .findItem import returnAllFoundMatches
-from .parseInHTML import parsePageInHTML
+from .nameTeam import returnNameTeam
+from .cutPoint import cutPoint
+from .calcResult import calcResult
