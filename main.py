@@ -1,7 +1,9 @@
 import re
-import pandas
-from findItem import returnAllFoundMatches
-from parseInHTML import parsePageInHTML
+from data import parsePageInHTML
+from data import returnAllFoundMatches
+# from display import saveCountTeamInExcel
+from display import saveResultInExcel
+
 # Парсим страницу в HTML
 parsePageInHTML()
 
@@ -60,28 +62,12 @@ def winnerInTime(home, alowe):
       winnerList.append('alowe')
   return winnerList
 
-# Сохранение файлов в Excel 
-def saveToExcel(nameList, pointList, result):
-  oldAr = pandas.read_excel('./teams.xlsx')
-  data = pandas.DataFrame({
-    'Дата': ['30.05.2022', '0'],
-    'Команды':[nameList[0], nameList[1]],
-    '1':[pointList[0][0], pointList[1][0]], 
-    '2':[pointList[0][1], pointList[1][1]], 
-    '3':[pointList[0][2], pointList[1][2]], 
-    '4':[pointList[0][3], pointList[1][3]], 
-    'Результат': [str(result), str(result)]
-  })
-  new = pandas.concat([oldAr, data], ignore_index=True)
-  new.to_excel('./teams.xlsx', index=False)
-  print(pointList)
-
 allMatch = returnAllFoundMatches()
 
 for item in allMatch: 
   point = cutPoint(item)
   names = nameTeam(item)
   winnerList = calcResult(*point)
-  saveToExcel(names, point, winnerList)
+  saveResultInExcel(names, point, winnerList)
 
 print('Готово!')
