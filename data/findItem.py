@@ -35,18 +35,18 @@ def findStopMatch(data, html):
     except: 
       continue
 
-def returnAllFoundMatches():
+def returnAllFoundMatches(date):
   fileBask = open('bask.html', 'r', encoding='utf-8')
   soup = BeautifulSoup(fileBask, 'lxml')
-  userData = input('Введите дату в формате XX.XX (31.12)')
+  userDate = date
   while True: 
     """Пока не найдёт ближайшие матчи - будет уменьшать дату"""
-    stopMatch = findStopMatch(userData, soup)
+    stopMatch = findStopMatch(userDate, soup)
     if stopMatch: 
       # Склеенный массив 
       findMatch = [stopMatch] + list(stopMatch.find_all_previous('div', class_ = 'event__match'))
       return findMatch
     else: 
-      userData = decData(userData)  
+      userDate = decData(userDate)  
     
     
