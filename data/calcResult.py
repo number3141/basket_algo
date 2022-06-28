@@ -1,16 +1,17 @@
 """Модуль, отвечающий за 'определение' победителя на основе листов 
 со значениями набранных очков по четвертям"""
 
-def calcResult(*team):
-  """Получает кортеж с двумя листами и вызывает MaxPointInTime"""
+def calcResult(teamPoints):
+  """Получает словарь с очками команд и проверяет победителя в каждой четверти"""
   # team -> ([25, 29, 39, 25], [28, 34, 14, 31])
-  homePoint, alowePoint = team
+  homePoint = teamPoints['home']
+  alowePoint = teamPoints['away']
   winnerList = []
   for i in range(len(homePoint)): 
     if homePoint[i] > alowePoint[i]: 
       winnerList.append('home')
     else: 
-      winnerList.append('alowe')
+      winnerList.append('away')
   
   if winnerList[0] == winnerList[1]:
     if winnerList[0] != winnerList[2]:

@@ -5,14 +5,16 @@ def cutPoint(match):
   """Получает один матч и возвращает очки хозяев и гостей
     Возвращаемое значение - ([очки хозяев], [очки гостей])
   """  
-  partHome = []
-  partAway = []
+  parts = {
+    'home': [],
+    'away': []
+  }
   for part in range(1, 5): 
     partPeriodHome = selectPointInPartByPlayField(match, 'home', part)
-    partHome.append(findDecimalNumImStr(partPeriodHome))
+    parts['home'].append(findDecimalNumImStr(partPeriodHome))
     partPeriodAway = selectPointInPartByPlayField(match, 'away', part)
-    partAway.append(findDecimalNumImStr(partPeriodAway))
-  return partHome, partAway 
+    parts['away'].append(findDecimalNumImStr(partPeriodAway))
+  return parts
 
 
 def selectPointInPartByPlayField(match, playField, part):

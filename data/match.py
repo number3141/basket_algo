@@ -9,14 +9,14 @@ class Match:
       'matchDate': date, 
       'nameHome': nameList[0], 
       'nameAway': nameList[1],
-      'pointHome': [pointList[0][0], pointList[0][1], pointList[0][2], pointList[0][3]], 
-      'pointAway': [pointList[0][0], pointList[0][1], pointList[0][2], pointList[0][3]],
+      'pointHome': [pointList['home'][0], pointList['home'][1], pointList['home'][2], pointList['home'][3]], 
+      'pointAway': [pointList['away'][0], pointList['away'][1], pointList['away'][2], pointList['away'][3]],
       'result': result
     }
-  
+
   def getData(self): 
     return self.data
-  
+
   def __repr__(self) -> str:
     return f"Матч №{self.data['id']} с участием команд {self.data['nameHome']} и {self.data['nameAway']}"
 
@@ -29,6 +29,12 @@ class MatchListWrite():
   def __repr__(self) -> str:
     return f'Матч-лист {self.frame}'
 
+  def saveResultInExcel(self, path):
+    self.fillDataFrameBeforeSave()
+    self.frame = pandas.DataFrame(self.listForWrite, columns=['Дата', "Команды", "1", '2', '3', '4', 'Итог'])
+    fileWrite = open(path, 'a', encoding='UTF-8', newline='')
+    self.frame.to_csv(fileWrite, index=False, sep=';')
+
   def fillDataFrameBeforeSave(self):
     for item in self.dataList: 
       homeTeam = [item['matchDate'], item['nameHome'], *item['pointHome'], item['result']]
@@ -36,11 +42,7 @@ class MatchListWrite():
       self.listForWrite.append(homeTeam)
       self.listForWrite.append(awayTeam)
 
-  def saveResultInExcel(self, path):
-    self.fillDataFrameBeforeSave()
-    self.frame = pandas.DataFrame(self.listForWrite, columns=['Дата', "Команды", "1", '2', '3', '4', 'Итог'])
-    fileWrite = open(path, 'a', encoding='UTF-8', newline='')
-    self.frame.to_csv(fileWrite, index=False, sep=';')
+  
 
 
 

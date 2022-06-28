@@ -1,29 +1,30 @@
 from data import returnAllFoundMatches, returnNameTeam, cutPoint, calcResult, findMatchData, Match
 from data.match import MatchListWrite
-# from display import saveCountTeamInExcel
-from display import saveResultInExcel, parsePageInHTML, Window
+from display import parsePageInHTML, Window
 from PyQt5.QtWidgets import QApplication, QTableWidgetItem, QFileDialog, QMessageBox, QPushButton
 
 matchList = []
 
 class StartWindow(Window): 
+
   def startProgram(self): 
     global matchList
-    # Парсим страницу в HTML
+    
     parsePageInHTML()
-    date = self.date.text()
-    allMatch = returnAllFoundMatches(date)
+    inputDate = self.date.text()
+    allMatch = returnAllFoundMatches(inputDate)
+
     for item in allMatch: 
       matchData = findMatchData(item)
-      pointList = cutPoint(item)
       names = returnNameTeam(item)
-      result = calcResult(*pointList)
-      newMatch = Match(names, pointList, matchData, result)
+      teamPoints = cutPoint(item)
+      result = calcResult(teamPoints)
+
+      newMatch = Match(names, teamPoints, matchData, result)
       matchList.append(newMatch.getData())
-      self.fillTable(names, pointList, result, matchData)
-    # self.close()
+      self.fillTable(newMatch.getData())
     print('Готово!')
-  # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
   def saveInExcel(self, path):
     global matchList
     rows = self.table.rowCount()

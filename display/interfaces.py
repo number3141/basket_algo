@@ -44,17 +44,21 @@ class Window(QMainWindow):
       self.layout.addWidget(self.table)
       self.setLayout(self.layout)
     
-    def fillTable(self, names, pointList, result, matchData): 
+    def fillTable(self, match): 
       countRow = self.table.rowCount()
-      isSecondTeam = 0
-      for indexRow in range(countRow, countRow + 2): 
-        self.table.insertRow(indexRow)
-        self.table.setItem(indexRow, 0, QTableWidgetItem(matchData))
-        self.table.setItem(indexRow, 1, QTableWidgetItem(names[isSecondTeam]))
-        for period in range(4): 
-          self.table.setItem(indexRow, period + 2, QTableWidgetItem(str(pointList[isSecondTeam][period])))
-        self.table.setItem(indexRow, 6, QTableWidgetItem(str(result)))
-        isSecondTeam = 1
+      self.createRowsWithMatchData(match, countRow, 'Home')
+      countRow += 1
+      self.createRowsWithMatchData(match, countRow, 'Away') 
+
+    def createRowsWithMatchData(self, match, indexCurrentRow, prefix):
+      self.table.insertRow(indexCurrentRow)
+      self.table.setItem(indexCurrentRow, 0, QTableWidgetItem(match['matchDate']))
+      self.table.setItem(indexCurrentRow, 1, QTableWidgetItem(match[f'name{prefix}']))
+      for period in range(4): 
+        currentColumn = period + 2
+        self.table.setItem(indexCurrentRow, currentColumn, QTableWidgetItem(str(match[f'point{prefix}'][period])))
+      self.table.setItem(indexCurrentRow, 6, QTableWidgetItem(str(match['result'])))
+      
     
     def startProgram(self):
       # Абстрактная функция - надо реализовать у того, кто наследует 
