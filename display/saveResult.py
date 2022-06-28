@@ -1,13 +1,13 @@
 import pandas 
 
-def saveResultInExcel(nameList, pointList, result):
+def saveResultInExcel(nameList, pointList, result, path):
   """Принимает 
     nameList - ['Team', 'Team'], 
     pointList - [[10, 11, 12, 13], [5, 4, 3, 2]], 
     result - 'итог'
     И сохраняет в Excel
   """
-  oldAr = pandas.read_excel('./teams.xlsx', engine='openpyxl')
+  oldAr = pandas.read_excel(path, engine='openpyxl')
   data = pandas.DataFrame({
     'Дата': ['30.05.2022', '0'],
     'Команды':[nameList[0], nameList[1]],
@@ -18,5 +18,5 @@ def saveResultInExcel(nameList, pointList, result):
     'Результат': [str(result), str(result)]
   })
   new = pandas.concat([oldAr, data], ignore_index=True)
-  new.to_excel('./teams.xlsx', index=False)
+  new.to_excel(path, index=False)
   print(pointList)

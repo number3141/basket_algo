@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QLabel, QLineEdit, QVBoxLayout, QPushButton, QMainWindow, QTableWidget, QTableWidgetItem, QHeaderView
+from PyQt5.QtWidgets import QFileDialog, QMessageBox, QLabel, QLineEdit, QVBoxLayout, QPushButton, QMainWindow, QTableWidgetItem, QTableWidget, QHeaderView, QApplication
 class Window(QMainWindow): 
     def __init__(self): 
       super(Window, self).__init__()
@@ -20,6 +20,10 @@ class Window(QMainWindow):
       self.startButton.move(10, 100)
       self.startButton.setText('Рассчитать')
 
+      self.saveButton = QPushButton(self)
+      self.saveButton.move(590, 100)
+      self.saveButton.setText('Сохранить Excel')
+
       self.table = QTableWidget(self)
       self.table.setGeometry(10, 150, 680, 320) 
       self.table.setColumnCount(7)  
@@ -32,6 +36,7 @@ class Window(QMainWindow):
       self.header.setSectionResizeMode(5, QHeaderView.ResizeToContents)
 
       self.startButton.clicked.connect(self.startProgram)
+      self.saveButton.clicked.connect(self.saveInExcel)
 
       self.layout.addWidget(self.date)
       self.layout.addWidget(self.dateLabel)
@@ -39,9 +44,21 @@ class Window(QMainWindow):
       self.layout.addWidget(self.table)
       self.setLayout(self.layout)
     
-    def startProgram():
+    def fillTable(self, names, pointList, result, matchData): 
+      countRow = self.table.rowCount()
+      isSecondTeam = 0
+      for indexRow in range(countRow, countRow + 2): 
+        self.table.insertRow(indexRow)
+        self.table.setItem(indexRow, 0, QTableWidgetItem(matchData))
+        self.table.setItem(indexRow, 1, QTableWidgetItem(names[isSecondTeam]))
+        for period in range(4): 
+          self.table.setItem(indexRow, period + 2, QTableWidgetItem(str(pointList[isSecondTeam][period])))
+        self.table.setItem(indexRow, 6, QTableWidgetItem(str(result)))
+        isSecondTeam = 1
+    
+    def startProgram(self):
       # Абстрактная функция - надо реализовать у того, кто наследует 
       raise NotImplementedError
-
-    def fillTable():
+    
+    def saveInExcel(): 
       raise NotImplementedError
