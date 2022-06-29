@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QFileDialog, QMessageBox, QLabel, QLineEdit, QVBoxLayout, QPushButton, QMainWindow, QTableWidgetItem, QTableWidget, QHeaderView, QApplication
+from PyQt5.QtWidgets import QLabel, QLineEdit, QVBoxLayout, QPushButton, QMainWindow, QTableWidgetItem, QTableWidget, QHeaderView
 class Window(QMainWindow): 
     def __init__(self): 
       super(Window, self).__init__()
@@ -22,7 +22,7 @@ class Window(QMainWindow):
 
       self.saveButton = QPushButton(self)
       self.saveButton.move(590, 100)
-      self.saveButton.setText('Сохранить Excel')
+      self.saveButton.setText('Сохранить в CSV')
 
       self.table = QTableWidget(self)
       self.table.setGeometry(10, 150, 680, 320) 
@@ -36,7 +36,7 @@ class Window(QMainWindow):
       self.header.setSectionResizeMode(5, QHeaderView.ResizeToContents)
 
       self.startButton.clicked.connect(self.startProgram)
-      self.saveButton.clicked.connect(self.saveInExcel)
+      self.saveButton.clicked.connect(self.saveInFile)
 
       self.layout.addWidget(self.date)
       self.layout.addWidget(self.dateLabel)
@@ -45,10 +45,10 @@ class Window(QMainWindow):
       self.setLayout(self.layout)
     
     def fillTable(self, match): 
-      countRow = self.table.rowCount()
-      self.createRowsWithMatchData(match, countRow, 'Home')
-      countRow += 1
-      self.createRowsWithMatchData(match, countRow, 'Away') 
+      currentRow = self.table.rowCount()
+      self.createRowsWithMatchData(match, currentRow, 'Home')
+      currentRow += 1
+      self.createRowsWithMatchData(match, currentRow, 'Away') 
 
     def createRowsWithMatchData(self, match, indexCurrentRow, prefix):
       self.table.insertRow(indexCurrentRow)
@@ -64,5 +64,5 @@ class Window(QMainWindow):
       # Абстрактная функция - надо реализовать у того, кто наследует 
       raise NotImplementedError
     
-    def saveInExcel(): 
+    def saveInFile(): 
       raise NotImplementedError

@@ -35,12 +35,9 @@ def findStopMatch(data, html):
     except: 
       continue
 
-def returnAllFoundMatches(date):
-  fileBask = open('bask.html', 'r', encoding='utf-8')
-  soup = BeautifulSoup(fileBask, 'lxml')
-  userDate = date
+def returnAllFoundMatches(userDate, soup):
+  """Пока не найдёт ближайшие матчи - будет уменьшать дату"""
   while True: 
-    """Пока не найдёт ближайшие матчи - будет уменьшать дату"""
     stopMatch = findStopMatch(userDate, soup)
     if stopMatch: 
       # Склеенный массив 
@@ -49,4 +46,7 @@ def returnAllFoundMatches(date):
     else: 
       userDate = decData(userDate)  
     
-    
+if __name__ == '__main__': 
+  fi = open('../bask.html')
+  soup = BeautifulSoup(fi, 'lxml')
+  returnAllFoundMatches('12.06', soup)

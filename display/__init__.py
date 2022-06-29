@@ -1,3 +1,3 @@
 from .saveCountTeam import saveCountTeamInExcel
-from .parseInHTML import parsePageInHTML
+from .parseInHTML import SoupFromHTML
 from .interfaces import Window

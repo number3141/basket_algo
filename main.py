@@ -1,7 +1,8 @@
-from data import returnAllFoundMatches, returnNameTeam, cutPoint, calcResult, findMatchData, Match
-from data.match import MatchListWrite
-from display import parsePageInHTML, Window
-from PyQt5.QtWidgets import QApplication, QTableWidgetItem, QFileDialog, QMessageBox, QPushButton
+from data import returnAllFoundMatches, returnNameTeam, cutPoint, calcResult, findMatchData, Match, MatchListWrite
+from display import Window
+from PyQt5.QtWidgets import QApplication, QFileDialog, QMessageBox
+
+from display.parseInHTML import SoupFromHTML
 
 matchList = []
 
@@ -9,10 +10,9 @@ class StartWindow(Window):
 
   def startProgram(self): 
     global matchList
-    
-    parsePageInHTML()
+    soup = SoupFromHTML('https://www.flashscore.com.ua/basketball/usa/nba/results/').getSoup()
     inputDate = self.date.text()
-    allMatch = returnAllFoundMatches(inputDate)
+    allMatch = returnAllFoundMatches(inputDate, soup)
 
     for item in allMatch: 
       matchData = findMatchData(item)
@@ -25,7 +25,7 @@ class StartWindow(Window):
       self.fillTable(newMatch.getData())
     print('Готово!')
 
-  def saveInExcel(self, path):
+  def saveInFile(self, path):
     global matchList
     rows = self.table.rowCount()
     if not rows:
@@ -37,6 +37,7 @@ class StartWindow(Window):
       return
     mat = MatchListWrite(matchList)
     mat.saveResultInExcel(path)
+    QMessageBox.information(self, 'Успешно', 'Файл успешно сохранён')
 
 
 def startApp(): 
