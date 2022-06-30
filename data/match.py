@@ -1,24 +1,71 @@
-import random
-from numpy import append
 import pandas
+import re
 
 class Match: 
-  def __init__(self, nameList, pointList, date, result):
+  def __init__(self, soup):
+    self.soup = soup
     self.data = {
-      # 'id': round(random.random() * 100000), 
-      'matchDate': date, 
-      'nameHome': nameList[0], 
-      'nameAway': nameList[1],
-      'pointHome': [pointList['home'][0], pointList['home'][1], pointList['home'][2], pointList['home'][3]], 
-      'pointAway': [pointList['away'][0], pointList['away'][1], pointList['away'][2], pointList['away'][3]],
-      'result': result
+      'matchDate' : self.findMatchData(), 
+      'nameHome': self.findTeamName('home'), 
+      'nameAway': self.findTeamName('away'), 
+      'pointHome': self.cutPoint('home'), 
+      'pointAway': self.cutPoint('away')
     }
+
+  def findMatchData(self): 
+    """Извлекает дату матча из объекта BS4"""
+    data = self.soup.find('div', class_='event__time').text
+    return str(data) 
+
+  def findTeamName(self, team):
+    # event__participant--home / event__participant--away
+    teamName = self.soup.find('div', class_=f'event__participant--{team}').text
+    return teamName 
+
+  def cutPoint(self, team): 
+    self.points = []
+    for part in range(1, 5): 
+      self.partPeriodHome = self.selectPointInPartByPlayField(team, part)
+      self.points.append(self.findDecimalNumImStr(self.partPeriodHome))
+    return self.points
+
+  def selectPointInPartByPlayField(self, playField, part):
+    return self.soup.select(f'.event__part--{playField}' + f'.event__part--{part}')
+
+  def findDecimalNumImStr(self, findStr):
+    # Регулярная строка для поиска всех десятичных чисел 
+    self.reg = re.compile('\d{2}')
+    # Конверт в строку, потому что тип - ResultSet бьютифушный 
+    self.findPointInPart = self.reg.findall(str(findStr))
+    return int(*self.findPointInPart)
+
+  def calcResult(self):
+    self.winnerList = []
+    for i in range(len(self.data['pointHome'])): 
+      if self.data['pointHome'][i] > self.data['pointAway'][i]: 
+        self.winnerList.append('home')
+      else: 
+        self.winnerList.append('away')
+    
+    if self.winnerList[0] == self.winnerList[1]:
+      if self.winnerList[0] != self.winnerList[2]:
+        self.data['result'] = 'Заход_3'
+        return
+      elif self.winnerList[0] != self.winnerList[3]:
+        self.data['result'] = 'Заход_4'
+        return
+      else:
+        self.data['result'] = 'Поражение'
+        return
+    else: 
+      self.data['result'] = 'Не подходит'
+      return
 
   def getData(self): 
     return self.data
 
   def __repr__(self) -> str:
-    return f"Матч №{self.data['id']} с участием команд {self.data['nameHome']} и {self.data['nameAway']}"
+    return f"Матч {self.data}"
 
 
 class MatchListWrite():
@@ -41,15 +88,3 @@ class MatchListWrite():
       awayTeam = [item['matchDate'], item['nameAway'], *item['pointAway'], item['result']]
       self.listForWrite.append(homeTeam)
       self.listForWrite.append(awayTeam)
-
-  
-
-
-
-if __name__ == '__main__': 
-  newMatch = Match(['Бостон', 'Маверикс'], [[5, 6, 3, 4], [1, 4, 2, 5]], '12.04 08:00', 'Заход_3')
-  newMatch2 = Match(['Даллас', 'Детроит'], [[7, 2, 3, 8], [6, 4, 5, 1]], '12.04 10:00', 'Заход_4')
-
-  matchList = MatchListWrite([newMatch.getData(), newMatch2.getData()])
-
-  matchList.fillDataFrameBeforeSave()

@@ -1,13 +1,7 @@
-from data import returnAllFoundMatches, returnNameTeam, cutPoint, calcResult, findMatchData, Match, MatchListWrite
-from display import Window
+from data import returnAllFoundMatches, Match, MatchListWrite, matchList
+from display import Window, SoupFromHTML
 from PyQt5.QtWidgets import QApplication, QFileDialog, QMessageBox
-
-from display.parseInHTML import SoupFromHTML
-
-matchList = []
-
 class StartWindow(Window): 
-
   def startProgram(self): 
     global matchList
     soup = SoupFromHTML('https://www.flashscore.com.ua/basketball/usa/nba/results/').getSoup()
@@ -15,12 +9,8 @@ class StartWindow(Window):
     allMatch = returnAllFoundMatches(inputDate, soup)
 
     for item in allMatch: 
-      matchData = findMatchData(item)
-      names = returnNameTeam(item)
-      teamPoints = cutPoint(item)
-      result = calcResult(teamPoints)
-
-      newMatch = Match(names, teamPoints, matchData, result)
+      newMatch = Match(item)
+      newMatch.calcResult()
       matchList.append(newMatch.getData())
       self.fillTable(newMatch.getData())
     print('Готово!')
