@@ -1,11 +1,11 @@
-from data import returnAllFoundMatches, Match, MatchList
+from data import Match, MatchList
 from display import Window, SoupFromHTML
 from PyQt5.QtWidgets import QApplication, QFileDialog, QMessageBox
 class StartWindow(Window): 
   def startProgram(self): 
-    soup = SoupFromHTML('https://www.flashscore.com.ua/basketball/usa/nba/results/').getSoup()
     inputDate = self.date.text()
-    allMatch = returnAllFoundMatches(inputDate, soup)
+    soup = SoupFromHTML(inputDate, 'https://www.flashscore.ru.com/basketball/usa/nba/results/')
+    allMatch = soup.returnAllFoundMatches()
     self.matchList = MatchList()
     for item in allMatch: 
       newMatch = Match(item)
