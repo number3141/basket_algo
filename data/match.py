@@ -9,8 +9,13 @@ class Match:
       'nameHome': self.findTeamName('home'), 
       'nameAway': self.findTeamName('away'), 
       'pointHome': self.cutPoint('home'), 
-      'pointAway': self.cutPoint('away')
+      'pointAway': self.cutPoint('away'),
+      'result': ''
     }
+  
+  def getNameTeam(self): 
+    if any([self.data['result'] == 'Заход_3', self.data['result'] == 'Заход_4']):
+      return (self.data['nameHome'], self.data['nameAway'])
 
   def findMatchData(self): 
     """Извлекает дату матча из объекта BS4"""
@@ -67,7 +72,6 @@ class Match:
   def __repr__(self) -> str:
     return f"Матч {self.data}"
 
-
 class MatchList():
   def __init__(self, listObj = []) -> None:
     self.dataList = listObj
@@ -91,3 +95,37 @@ class MatchList():
       awayTeam = [item['matchDate'], item['nameAway'], *item['pointAway'], item['result']]
       self.dataListWithStructForWriting.append(homeTeam)
       self.dataListWithStructForWriting.append(awayTeam)
+
+class FrequencyList(): 
+  def __init__(self) -> None:
+    self.freqList = {}
+    self.sortedTeam = {}
+
+  def __repr__(self) -> str:
+    return f'{self.sortedTeam}'
+
+  def getDatat(self): 
+    return self.sortedTeam
+
+  def addTeamInList(self, teamNames): 
+    if teamNames: 
+      for item in teamNames: 
+        if self.freqList.get(item): 
+          self.freqList[item] += 1 
+        else: 
+          self.freqList[item] = 1 
+      self.sortedKey = sorted(self.freqList, key=self.freqList.get)
+      for item in self.sortedKey:
+        self.sortedTeam[item] = self.freqList[item]
+
+if __name__ == '__main__': 
+  frq = FrequencyList()
+  frq.addTeamInList(('Торнадо', 'Питчер'))
+  frq.addTeamInList(['Торнадо', 'Питчер'])
+  frq.addTeamInList(['Торнадо', 'Чикаго'])
+
+  li = frq.getDatat()
+  print(li)
+  # for item in li: 
+  #   print(item)
+  #   print(li[item])

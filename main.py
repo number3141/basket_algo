@@ -1,17 +1,23 @@
 from data import Match, MatchList
+from data.match import FrequencyList
 from display import Window, SoupFromHTML
 from PyQt5.QtWidgets import QApplication, QFileDialog, QMessageBox
+
 class StartWindow(Window): 
+  
   def startProgram(self): 
     inputDate = self.date.text()
     soup = SoupFromHTML(inputDate, 'https://www.flashscore.ru.com/basketball/usa/nba/results/')
     allMatch = soup.returnAllFoundMatches()
     self.matchList = MatchList()
+    self.freqList = FrequencyList()
     for item in allMatch: 
       newMatch = Match(item)
       newMatch.calcResult()
+      self.freqList.addTeamInList(newMatch.getNameTeam())
       self.matchList.addMatchInList(newMatch.getData())
       self.fillTable(newMatch.getData())
+    self.fillFreqTable(self.freqList.getDatat())
     print('Готово!')
 
   def saveInFile(self, path):
