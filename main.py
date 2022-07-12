@@ -7,8 +7,11 @@ class StartWindow(Window):
   
   def startProgram(self): 
     inputDate = self.date.text()
-    soup = SoupFromHTML(inputDate, 'https://www.flashscore.ru.com/basketball/usa/nba/results/')
-    allMatch = soup.returnAllFoundMatches()
+    self.soup = SoupFromHTML(inputDate, 'https://www.flashscore.ru.com/basketball/usa/nba/results/')
+    self.soup.startConnect()
+    self.soup.startMakeSoup()
+    self.soup.closeConnect()
+    allMatch = self.soup.returnAllFoundMatches()
     self.matchList = MatchList()
     self.freqList = FrequencyList()
     for item in allMatch: 

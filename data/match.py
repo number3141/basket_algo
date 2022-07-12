@@ -126,6 +126,3 @@ if __name__ == '__main__':
 
   li = frq.getDatat()
   print(li)
-  # for item in li: 
-  #   print(item)
-  #   print(li[item])

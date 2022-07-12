@@ -1,5 +1,6 @@
+from seleniumwire import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
-from selenium import webdriver
+# from selenium import webdriver
 from bs4 import BeautifulSoup
 
 class SoupFromHTML():
@@ -7,13 +8,24 @@ class SoupFromHTML():
     self.date = date
     self.url = url 
     self.driver = webdriver.Chrome(ChromeDriverManager().install())
-    self.driver.get(self.url)
-    self.content = self.driver.page_source
-    self.soup = BeautifulSoup(self.content, 'lxml')
   
   def __repr__(self) -> str:
     return f'Объект - {self.soup}'
-    
+  
+  def startConnect(self): 
+    self.driver.get(self.url)   
+    self.mainStatus = self.driver.requests[0].response.status_code
+    while self.mainStatus != 200:
+      self.driver.refresh() 
+      print('Перезагрузил!')
+
+  def startMakeSoup(self): 
+    self.content = self.driver.page_source
+    self.soup = BeautifulSoup(self.content, 'lxml')
+  
+  def closeConnect(self): 
+    self.driver.quit()
+
   def getSoup(self): 
     return self.soup
 
@@ -63,3 +75,9 @@ class SoupFromHTML():
       self.zeroBeforeDay = '0'
     return f'{self.zeroBeforeDay}{self.day}.{self.zeroBeforeMonth}{self.month}'
 
+
+if __name__ == '__main__': 
+  par = SoupFromHTML('12.04')
+  par.startConnect()
+  par.startMakeSoup()
+  
