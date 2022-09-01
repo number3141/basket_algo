@@ -5,12 +5,12 @@ class Match:
     def __init__(self, soup):
         self.soup = soup
         self.data = {
-        'matchDate' : self.findMatchData(), 
-        'nameHome': self.findTeamName('home'), 
-        'nameAway': self.findTeamName('away'), 
-        'pointHome': self.cutPoint('home'), 
-        'pointAway': self.cutPoint('away'),
-        'result': ''
+            'matchDate' : self.findMatchData(), 
+            'nameHome': self.findTeamName('home'), 
+            'nameAway': self.findTeamName('away'), 
+            'pointHome': self.cutPoint('home'), 
+            'pointAway': self.cutPoint('away'),
+            'result': ''
         }
   
     def getNameTeam(self): 
@@ -23,16 +23,18 @@ class Match:
         return str(data) 
 
     def findTeamName(self, team):
+        """Извлекает имя команды по префиксу *team* """
         # event__participant--home / event__participant--away
         teamName = self.soup.find('div', class_=f'event__participant--{team}').text
         return teamName 
 
     def cutPoint(self, team): 
-        self.points = []
-        for part in range(1, 5): 
-            self.partPeriodHome = self.selectPointInPartByPlayField(team, part)
-            self.points.append(self.findDecimalNumImStr(self.partPeriodHome))
-        return self.points
+        """Возвращает лист очков команды по префиксу"""
+        points = []
+        for part in [1, 2, 3, 4]: 
+            self.pointTeamInPart = self.selectPointInPartByPlayField(team, part)
+            self.points.append(self.findDecimalNumImStr(self.pointTeamInPart))
+        return points
 
     def selectPointInPartByPlayField(self, playField, part):
         return self.soup.select(f'.event__part--{playField}' + f'.event__part--{part}')
