@@ -1,26 +1,32 @@
 from data import Match, MatchList, SoupFromHTML
-from data.match import FrequencyList
+# from data.match import FrequencyList
 from display import Window
 from PyQt5.QtWidgets import QApplication, QFileDialog, QMessageBox
 
 class StartWindow(Window): 
-  
-    def startProgram(self): 
+    
+    def startProgram(self):
+        self.startTakeSoupExit()
+        self.calculateResultAllMatches()
+    
+    def startTakeSoupExit(self): 
         inputDate = self.date.text()
-        self.soup = SoupFromHTML(inputDate, 'https://www.flashscore.ru.com/basketball/usa/nba/results/')
+        self.soup = SoupFromHTML(inputDate, 'https://www.flashscore.ru.com/basketball/usa/nba-2021-2022/results/')
         self.soup.startConnect()
         self.soup.startMakeSoup()
         self.soup.closeConnect()
+    
+    def calculateResultAllMatches(self): 
         allMatch = self.soup.returnAllFoundMatches()
         self.matchList = MatchList()
-        self.freqList = FrequencyList()
+        # self.freqList = FrequencyList()
         for item in allMatch: 
             newMatch = Match(item)
             newMatch.calcResult()
-            self.freqList.addTeamInList(newMatch.getNameTeam())
+            # self.freqList.addTeamInList(newMatch.getNameTeam())
             self.matchList.addMatchInList(newMatch.getData())
             self.fillTable(newMatch.getData())
-        self.fillFreqTable(self.freqList.getDatat())
+        # self.fillFreqTable(self.freqList.getDatat())
         print('Готово!')
 
     def saveInFile(self, path):
@@ -45,5 +51,3 @@ def startApp():
 
 if __name__ == '__main__': 
     startApp()
-
-  

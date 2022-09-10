@@ -30,11 +30,11 @@ class Match:
 
     def cutPoint(self, team): 
         """Возвращает лист очков команды по префиксу"""
-        points = []
+        self.points = []
         for part in [1, 2, 3, 4]: 
             self.pointTeamInPart = self.selectPointInPartByPlayField(team, part)
             self.points.append(self.findDecimalNumImStr(self.pointTeamInPart))
-        return points
+        return self.points
 
     def selectPointInPartByPlayField(self, playField, part):
         return self.soup.select(f'.event__part--{playField}' + f'.event__part--{part}')
@@ -98,33 +98,33 @@ class MatchList():
             self.dataListWithStructForWriting.append(homeTeam)
             self.dataListWithStructForWriting.append(awayTeam)
 
-class FrequencyList(): 
-    def __init__(self) -> None:
-        self.freqList = {}
-        self.sortedTeam = {}
+# class FrequencyList(): 
+#     def __init__(self) -> None:
+#         self.freqList = {}
+#         self.sortedTeam = {}
 
-    def __repr__(self) -> str:
-        return f'{self.sortedTeam}'
+#     def __repr__(self) -> str:
+#         return f'{self.sortedTeam}'
 
-    def getDatat(self): 
-        return self.sortedTeam
+#     def getDatat(self): 
+#         return self.sortedTeam
 
-    def addTeamInList(self, teamNames): 
-        if teamNames: 
-            for item in teamNames: 
-                if self.freqList.get(item): 
-                    self.freqList[item] += 1 
-                else: 
-                    self.freqList[item] = 1 
-            self.sortedKey = sorted(self.freqList, key=self.freqList.get)
-            for item in self.sortedKey:
-                self.sortedTeam[item] = self.freqList[item]
+#     def addTeamInList(self, teamNames): 
+#         if teamNames: 
+#             for item in teamNames: 
+#                 if self.freqList.get(item): 
+#                     self.freqList[item] += 1 
+#                 else: 
+#                     self.freqList[item] = 1 
+#             self.sortedKey = sorted(self.freqList, key=self.freqList.get)
+#             for item in self.sortedKey:
+#                 self.sortedTeam[item] = self.freqList[item]
 
-if __name__ == '__main__': 
-    frq = FrequencyList()
-    frq.addTeamInList(('Торнадо', 'Питчер'))
-    frq.addTeamInList(['Торнадо', 'Питчер'])
-    frq.addTeamInList(['Торнадо', 'Чикаго'])
+# if __name__ == '__main__': 
+    # frq = FrequencyList()
+    # frq.addTeamInList(('Торнадо', 'Питчер'))
+    # frq.addTeamInList(['Торнадо', 'Питчер'])
+    # frq.addTeamInList(['Торнадо', 'Чикаго'])
 
-    li = frq.getDatat()
-    print(li)
+    # li = frq.getDatat()
+    # print(li)

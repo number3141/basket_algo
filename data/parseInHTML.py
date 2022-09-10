@@ -1,4 +1,3 @@
-from mailcap import findmatch
 from seleniumwire import webdriver
 from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
@@ -21,7 +20,6 @@ class SoupFromHTML():
         self.mainStatus = self.driver.requests[0].response.status_code
         while self.mainStatus != 200:
             self.driver.refresh() 
-        self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         
     def startMakeSoup(self): 
         """Забирает контент со страницы и делает суп"""
@@ -39,6 +37,7 @@ class SoupFromHTML():
         while True: 
             self.stopMatch = self.findStopMatch()
             if self.stopMatch: 
+                print('МАТЧ НАЙДЕН!')
                 # Склеенный массив 
                 self.findMatch = [self.stopMatch] + list(self.stopMatch.find_all_previous('div', class_ = 'event__match'))
                 return self.findMatch
@@ -63,9 +62,6 @@ class SoupFromHTML():
             return findMatch
         except: 
             return False
-        
-    def scrollBottom(self):
-        self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);") 
     
 
 
