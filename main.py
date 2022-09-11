@@ -1,4 +1,4 @@
-from data import Match, MatchList, SoupFromHTML
+from data import Match, MatchList, SoupFromHTML, Connection
 # from data.match import FrequencyList
 from display import Window
 from PyQt5.QtWidgets import QApplication, QFileDialog, QMessageBox
@@ -8,13 +8,12 @@ class StartWindow(Window):
     def startProgram(self):
         self.startTakeSoupExit()
         self.calculateResultAllMatches()
-    
+        
     def startTakeSoupExit(self): 
         inputDate = self.date.text()
-        self.soup = SoupFromHTML(inputDate, 'https://www.flashscore.ru.com/basketball/usa/nba-2021-2022/results/')
-        self.soup.startConnect()
-        self.soup.startMakeSoup()
-        self.soup.closeConnect()
+        self.webpage = Connection('https://www.flashscore.ru.com/basketball/usa/nba-2021-2022/results/')
+        self.pageContent = self.webpage.getContent()
+        self.soup = SoupFromHTML(inputDate, self.pageContent)
     
     def calculateResultAllMatches(self): 
         allMatch = self.soup.returnAllFoundMatches()
