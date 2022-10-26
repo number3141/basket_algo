@@ -1,6 +1,8 @@
+from unittest.mock import patch
 from PyQt5.QtWidgets import QApplication, QFileDialog, QMessageBox
 
 from data import Connection, FrequencyList, Match, MatchList, SoupFromHTML
+from data.saveData import saveData
 from display import Window
 
 
@@ -39,12 +41,20 @@ class StartWindow(Window):
         if not rows:
             QMessageBox.information(self, 'Внимание', 'Нечего сохранять.')
             return  
-        path = QFileDialog.getSaveFileName(self, 'Save CSV', '.', 'CSV(*.csv)')
+        path = QFileDialog.getSaveFileName(self, 'Save Excel', '.', 'XLSX(*.xlsx)')
         if not path:
             QMessageBox.information(self, 'Внимание', 'Не указан файл для сохранения.')
             return
-        print(path[0])
-        self.matchList.saveResultInExcel(path[0])
+        
+        self.matchList.fillDataFrameBeforeSave()
+        self.freqList.fillDataFrameBeforeSave()
+
+        saveMatches = saveData()
+        saveMatches.addFrame(self.matchList.dataListWithStructForWriting, self.matchList.columns, 'MatchList')
+        saveMatches.addFrame(self.freqList.freqListWithStructForWriting, self.freqList.columns, 'FreqList')
+        
+        saveMatches.saveInExcel(path[0])
+        
         QMessageBox.information(self, 'Успешно', 'Файл успешно сохранён')
 
 
