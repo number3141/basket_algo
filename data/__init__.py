@@ -1,5 +1,7 @@
 """Файлы, связанные с работой с данными"""
-from .match import Match, MatchList
-from .parseInHTML import SoupFromHTML
-from .matchDate import MatchDate
 from .connection import Connection
+from .frequencyList import FrequencyList
+from .match import Match
+from .matchDate import MatchDate
+from .matchList import MatchList
+from .parseInHTML import SoupFromHTML

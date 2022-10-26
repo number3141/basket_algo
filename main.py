@@ -1,31 +1,37 @@
-from data import Match, MatchList, SoupFromHTML, Connection
-# from data.match import FrequencyList
-from display import Window
 from PyQt5.QtWidgets import QApplication, QFileDialog, QMessageBox
+
+from data import Connection, FrequencyList, Match, MatchList, SoupFromHTML
+from display import Window
+
 
 class StartWindow(Window): 
     
     def startProgram(self):
-        self.startTakeSoupExit()
+        self.getWebPageContent()
+        self.startCookedSoupFromSite()
         self.calculateResultAllMatches()
-        
-    def startTakeSoupExit(self): 
-        inputDate = self.date.text()
-        self.webpage = Connection('https://www.flashscore.ru.com/basketball/usa/nba-2021-2022/results/')
-        self.pageContent = self.webpage.getContent()
-        self.soup = SoupFromHTML(inputDate, self.pageContent)
     
+    def getWebPageContent(self) -> None: 
+        """Соединяемся с сайтом и забирам весь контент с него"""
+        self.webpage = Connection('https://www.flashscore.ru.com/basketball/usa/nba/results/')
+        self.pageContent = self.webpage.getContent()
+            
+    def startCookedSoupFromSite(self) -> None: 
+        """Создание супа из сайта"""
+        inputDate = self.date.text()
+        self.soup = SoupFromHTML(inputDate, self.pageContent)
+        
     def calculateResultAllMatches(self): 
-        allMatch = self.soup.returnAllFoundMatches()
+        self.allMatches = self.soup.returnAllFoundMatches()
         self.matchList = MatchList()
-        # self.freqList = FrequencyList()
-        for item in allMatch: 
+        self.freqList = FrequencyList()
+        for item in self.allMatches: 
             newMatch = Match(item)
             newMatch.calcResult()
-            # self.freqList.addTeamInList(newMatch.getNameTeam())
+            self.freqList.addTeamInList(newMatch.getNameTeam())
             self.matchList.addMatchInList(newMatch.getData())
             self.fillTable(newMatch.getData())
-        # self.fillFreqTable(self.freqList.getDatat())
+        self.fillFreqTable(self.freqList.getData())
         print('Готово!')
 
     def saveInFile(self, path):
@@ -33,11 +39,12 @@ class StartWindow(Window):
         if not rows:
             QMessageBox.information(self, 'Внимание', 'Нечего сохранять.')
             return  
-        path, _ = QFileDialog.getSaveFileName(self, 'Save CSV', '.', 'CSV(*.csv)')
+        path = QFileDialog.getSaveFileName(self, 'Save CSV', '.', 'CSV(*.csv)')
         if not path:
             QMessageBox.information(self, 'Внимание', 'Не указан файл для сохранения.')
             return
-        self.matchList.saveResultInExcel(path)
+        print(path[0])
+        self.matchList.saveResultInExcel(path[0])
         QMessageBox.information(self, 'Успешно', 'Файл успешно сохранён')
 
 

@@ -1,5 +1,7 @@
 from bs4 import BeautifulSoup
+
 from data.matchDate import MatchDate
+
 
 class SoupFromHTML():
     def __init__(self, dateString, content) -> None:
@@ -37,6 +39,7 @@ class SoupFromHTML():
     def isMatchWithDate(self, time): 
         try: 
             stringForFind = f"{self.date.getDay()}.{self.date.getMonth()}. {time}"
+            # parent из-за того, что возвращается строка, а нам нужен весь матч (родитель)
             findMatch = self.soup.find(string=stringForFind).parent.parent
             return findMatch
         except: 

@@ -1,5 +1,5 @@
-import pandas
 import re
+
 
 class Match: 
     def __init__(self, soup):
@@ -73,52 +73,6 @@ class Match:
 
     def __repr__(self) -> str:
         return f"Матч {self.data}"
-
-class MatchList():
-    def __init__(self, listObj = []) -> None:
-        self.dataList = listObj
-        self.dataListWithStructForWriting = []
-
-    def __repr__(self) -> str:
-        return f'Матч-лист {self.frame}'
-
-    def addMatchInList(self, match):
-        self.dataList.append(match)
-
-    def saveResultInExcel(self, path):
-        self.fillDataFrameBeforeSave()
-        self.frame = pandas.DataFrame(self.dataListWithStructForWriting, columns=['Дата', "Команды", "1", '2', '3', '4', 'Итог'])
-        fileWrite = open(path, 'a', encoding='UTF-8', newline='')
-        self.frame.to_csv(fileWrite, index=False, sep=';')
-
-    def fillDataFrameBeforeSave(self):
-        for item in self.dataList: 
-            homeTeam = [item['matchDate'], item['nameHome'], *item['pointHome'], item['result']]
-            awayTeam = [item['matchDate'], item['nameAway'], *item['pointAway'], item['result']]
-            self.dataListWithStructForWriting.append(homeTeam)
-            self.dataListWithStructForWriting.append(awayTeam)
-
-# class FrequencyList(): 
-#     def __init__(self) -> None:
-#         self.freqList = {}
-#         self.sortedTeam = {}
-
-#     def __repr__(self) -> str:
-#         return f'{self.sortedTeam}'
-
-#     def getDatat(self): 
-#         return self.sortedTeam
-
-#     def addTeamInList(self, teamNames): 
-#         if teamNames: 
-#             for item in teamNames: 
-#                 if self.freqList.get(item): 
-#                     self.freqList[item] += 1 
-#                 else: 
-#                     self.freqList[item] = 1 
-#             self.sortedKey = sorted(self.freqList, key=self.freqList.get)
-#             for item in self.sortedKey:
-#                 self.sortedTeam[item] = self.freqList[item]
 
 # if __name__ == '__main__': 
     # frq = FrequencyList()

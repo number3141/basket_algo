@@ -1,6 +1,7 @@
 from seleniumwire import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 
+
 class Connection(): 
     def __init__(self, url) -> None:
         self.url = url 
