@@ -1,8 +1,6 @@
-from unittest.mock import patch
 from PyQt5.QtWidgets import QApplication, QFileDialog, QMessageBox
 
-from data import Connection, FrequencyList, Match, MatchList, SoupFromHTML
-from data.saveData import saveData
+from data import Connection, FrequencyList, Match, MatchList, SoupFromHTML, SaveData
 from display import Window
 
 
@@ -30,11 +28,11 @@ class StartWindow(Window):
         for item in self.allMatches: 
             newMatch = Match(item)
             newMatch.calcResult()
-            self.freqList.addTeamInList(newMatch.getNameTeam())
+            if newMatch.isAppropriateMatch():          
+                self.freqList.addTeamInList(newMatch.getData())
             self.matchList.addMatchInList(newMatch.getData())
             self.fillTable(newMatch.getData())
         self.fillFreqTable(self.freqList.getData())
-        print('Готово!')
 
     def saveInFile(self, path):
         rows = self.table.rowCount()
@@ -49,7 +47,7 @@ class StartWindow(Window):
         self.matchList.fillDataFrameBeforeSave()
         self.freqList.fillDataFrameBeforeSave()
 
-        saveMatches = saveData()
+        saveMatches = SaveData()
         saveMatches.addFrame(self.matchList.dataListWithStructForWriting, self.matchList.columns, 'MatchList')
         saveMatches.addFrame(self.freqList.freqListWithStructForWriting, self.freqList.columns, 'FreqList')
         

@@ -1,8 +1,5 @@
 import pandas
 
-from data.saveData import saveData
-
-
 class MatchList():
     def __init__(self, listObj = []) -> None:
         self.dataList = listObj

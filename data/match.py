@@ -10,12 +10,18 @@ class Match:
             'nameAway': self.findTeamName('away'), 
             'pointHome': self.cutPoint('home'), 
             'pointAway': self.cutPoint('away'),
-            'result': ''
+            'loser': '',
+            'winner': '',
+            'result': '', 
         }
-  
-    def getNameTeam(self): 
+    
+    def isAppropriateMatch(self):
         if any([self.data['result'] == 'Заход_3', self.data['result'] == 'Заход_4']):
-            return (self.data['nameHome'], self.data['nameAway'])
+            return True 
+        return False
+        
+    def getData(self):
+        return self.data
 
     def findMatchData(self): 
         """Извлекает дату матча из объекта BS4"""
@@ -48,17 +54,20 @@ class Match:
 
     def calcResult(self):
         self.winnerList = []
-        for i in range(len(self.data['pointHome'])): 
+        for i in list(range(4)): 
             if self.data['pointHome'][i] > self.data['pointAway'][i]: 
-                self.winnerList.append('home')
+                self.winnerList.append(self.data['nameHome'])
             else: 
-                self.winnerList.append('away')
+                self.winnerList.append(self.data['nameAway'])
         
         if self.winnerList[0] == self.winnerList[1]:
+            self.data['loser'] = self.winnerList[0]
             if self.winnerList[0] != self.winnerList[2]:
+                self.data['winner'] = self.winnerList[2]
                 self.data['result'] = 'Заход_3'
                 return
             elif self.winnerList[0] != self.winnerList[3]:
+                self.data['loser'] = self.winnerList[3]
                 self.data['result'] = 'Заход_4'
                 return
             else:

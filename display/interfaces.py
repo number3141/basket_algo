@@ -26,7 +26,7 @@ class Window(QMainWindow):
 
         self.freqTable = QTableWidget(self)
         self.freqTable.setGeometry(700, 150, 480, 320) 
-        self.freqTable.setColumnCount(2) 
+        self.freqTable.setColumnCount(4) 
 
         self.freqHeader = self.freqTable.horizontalHeader()    
         self.freqHeader.setSectionResizeMode(0, QHeaderView.Stretch)
@@ -71,7 +71,9 @@ class Window(QMainWindow):
         for item in match: 
             self.freqTable.insertRow(self.currentFreqRow)
             self.freqTable.setItem(self.currentFreqRow, 0, QTableWidgetItem(str(item)))
-            self.freqTable.setItem(self.currentFreqRow, 1, QTableWidgetItem(str(match[item])))
+            self.freqTable.setItem(self.currentFreqRow, 1, QTableWidgetItem(str(match[item]['pass'])))
+            self.freqTable.setItem(self.currentFreqRow, 2, QTableWidgetItem(str(match[item]['take'])))  
+            self.freqTable.setItem(self.currentFreqRow, 3, QTableWidgetItem(str(match[item]['total'])))  
     
     def startProgram(self):
         # Абстрактная функция - надо реализовать у того, кто наследует 

@@ -1,7 +1,7 @@
 import pandas
 
 
-class saveData(): 
+class SaveData(): 
     """Создаём объект для сохранения листов"""
     def __init__(self): 
         self.frameList = []
