@@ -67,7 +67,7 @@ class Match:
                 self.data['result'] = 'Заход_3'
                 return
             elif self.winnerList[0] != self.winnerList[3]:
-                self.data['loser'] = self.winnerList[3]
+                self.data['winner'] = self.winnerList[3]
                 self.data['result'] = 'Заход_4'
                 return
             else:

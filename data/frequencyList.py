@@ -4,11 +4,10 @@ class FrequencyList():
             'Тестовая команда': {'pass': 2, 'take': 3, 'total': 5},
         }
         self.freqListWithStructForWriting = []
-        self.sortedTeam = {}
         self.columns = ['Команда', 'Отдали четверть после половины', 'Забрали четверть после половины', 'Всего']
         
     def __repr__(self) -> str:
-        return f'{self.sortedTeam}'
+        return f'{self.freqList}'
 
     def getData(self): 
         return self.freqList
