@@ -16,7 +16,7 @@ class Match:
         }
     
     def isAppropriateMatch(self):
-        if any([self.data['result'] == 'Заход_3', self.data['result'] == 'Заход_4']):
+        if any([self.data['result'] == 'Заход_3', self.data['result'] == 'Заход_4', self.data['result'] == 'Поражение']):
             return True 
         return False
         
