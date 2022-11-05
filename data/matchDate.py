@@ -1,8 +1,11 @@
+from datetime import datetime
+
 class MatchDate(): 
     def __init__(self, stringDate) -> None:
         self.dateList = stringDate.split('.')
         self.day = int(self.dateList[0])
         self.month = int(self.dateList[1])
+        self.date = datetime(2022, self.month, self.day)
         
     def __repr__(self) -> str:
         return f'День - {self.day}, Месяц - {self.month}'
