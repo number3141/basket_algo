@@ -1,6 +1,3 @@
-from traceback import print_tb
-
-
 class FrequencyList(): 
     def __init__(self) -> None:
         self.freqList = {

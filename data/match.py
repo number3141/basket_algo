@@ -15,24 +15,29 @@ class Match:
             'result': '', 
         }
     
+
     def isAppropriateMatch(self):
         if any([self.data['result'] == 'Заход_3', self.data['result'] == 'Заход_4', self.data['result'] == 'Поражение']):
             return True 
         return False
         
+
     def getData(self):
         return self.data
+
 
     def findMatchData(self): 
         """Извлекает дату матча из объекта BS4"""
         data = self.soup.find('div', class_='event__time').text
         return str(data) 
 
+
     def findTeamName(self, team):
         """Извлекает имя команды по префиксу *team* """
         # event__participant--home / event__participant--away
         teamName = self.soup.find('div', class_=f'event__participant--{team}').text
         return teamName 
+
 
     def cutPoint(self, team): 
         """Возвращает лист очков команды по префиксу"""
@@ -42,8 +47,10 @@ class Match:
             self.points.append(self.findDecimalNumImStr(self.pointTeamInPart))
         return self.points
 
+
     def selectPointInPartByPlayField(self, playField, part):
         return self.soup.select(f'.event__part--{playField}' + f'.event__part--{part}')
+
 
     def findDecimalNumImStr(self, findStr):
         # Регулярная строка для поиска всех десятичных чисел 
@@ -51,6 +58,7 @@ class Match:
         # Конверт в строку, потому что тип - ResultSet бьютифушный 
         self.findPointInPart = self.reg.findall(str(findStr))
         return int(*self.findPointInPart)
+
 
     def calcResult(self):
         self.winnerList = []
@@ -77,17 +85,10 @@ class Match:
             self.data['result'] = 'Не подходит'
             return
 
+
     def getData(self): 
         return self.data
 
+
     def __repr__(self) -> str:
         return f"Матч {self.data}"
-
-# if __name__ == '__main__': 
-    # frq = FrequencyList()
-    # frq.addTeamInList(('Торнадо', 'Питчер'))
-    # frq.addTeamInList(['Торнадо', 'Питчер'])
-    # frq.addTeamInList(['Торнадо', 'Чикаго'])
-
-    # li = frq.getDatat()
-    # print(li)

@@ -2,17 +2,19 @@ from bs4 import BeautifulSoup
 
 from data.matchDate import MatchDate
 
-
 class SoupFromHTML():
     def __init__(self, dateString, content) -> None:
         self.date = MatchDate(dateString)
         self.soup = BeautifulSoup(content, 'lxml')
   
+
     def __repr__(self) -> str:
         return f'Объект - {self.soup}'
 
+
     def getSoup(self): 
         return self.soup
+
 
     def returnAllFoundMatches(self):
         """Пока не найдёт ближайшие матчи - будет уменьшать дату"""
@@ -23,11 +25,12 @@ class SoupFromHTML():
                 self.findMatch = [self.stopMatch] + list(self.stopMatch.find_all_previous('div', class_ = 'event__match'))
                 return self.findMatch
     
+
     def findStopMatch(self):
-         # Первый родитель - блок data, второй - само событие. Поэтому parent.parent
         """Получает дату и находит последний матч, перебирая все времена, в которых играют команды"""
         self.timeList = ['01:00', '01:30', '02:30', '02:30', '03:00', '03:30', '04:00', '04:30', '05:00',
         '05:30', '06:00', '06:30', '07:00', '07:30', '08:00', '08:30', '09:00', '09:30']
+        
         while True: 
             for time in self.timeList:
                 print(f"{self.date.getDay()}.{self.date.getMonth()} {time}")

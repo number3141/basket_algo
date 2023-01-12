@@ -7,14 +7,18 @@ class MatchDate():
         self.month = int(self.dateList[1])
         self.date = datetime(2022, self.month, self.day)
         
+
     def __repr__(self) -> str:
         return f'День - {self.day}, Месяц - {self.month}'
+
 
     def getDay(self):
         return self.day if self.day >= 10 else f'0{self.day}' 
     
+
     def getMonth(self): 
         return self.month if self.month >= 10 else f'0{self.month}'
+
 
     def decDate(self): 
         if self.day == 1: 

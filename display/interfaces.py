@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QApplication, QLabel, QLineEdit, QVBoxLayout, QPushButton, QMainWindow, QTableWidgetItem, QTableWidget, QHeaderView
+from PyQt5.QtWidgets import QApplication, QLabel, QLineEdit, QVBoxLayout, QPushButton, QMainWindow, QTableWidgetItem, QTableWidget, QHeaderView, QComboBox
 class Window(QMainWindow): 
     def __init__(self): 
         super(Window, self).__init__()
@@ -8,6 +8,7 @@ class Window(QMainWindow):
 
         self.setWindowTitle('Basket Parse')
         
+        # Введите дату
         self.dateLabel = QLabel(self)
         self.dateLabel.move(10, 10)
         self.dateLabel.setText('Введите дату')
@@ -16,6 +17,12 @@ class Window(QMainWindow):
         self.date.move(10, 50)
         self.date.setInputMask('99.99')
 
+        # Выберите браузер
+        self.check = QComboBox(self)
+        self.check.move(200, 30)
+        self.check.addItems(["Google", "Firefox"])
+
+        # Кнопка рассчитать 
         self.startButton = QPushButton(self)
         self.startButton.move(10, 100)
         self.startButton.setText('Рассчитать')
@@ -45,12 +52,15 @@ class Window(QMainWindow):
         self.startButton.clicked.connect(self.startProgram)
         self.saveButton.clicked.connect(self.saveInFile)
 
+        # Добавление элементов в шаблон 
         self.layout.addWidget(self.date)
         self.layout.addWidget(self.dateLabel)
         self.layout.addWidget(self.startButton)
         self.layout.addWidget(self.table)
+        self.layout.addWidget(self.check)
         self.setLayout(self.layout)
     
+
     def fillTable(self, match): 
         self.currentRow = self.table.rowCount()
         self.createRowsWithMatchData(match, self.currentRow, 'Home')
