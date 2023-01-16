@@ -1,10 +1,21 @@
 class FrequencyList(): 
     def __init__(self) -> None:
         self.freqList = {
-            'Тестовая команда': {'pass': 2, 'take': 3, 'defeat': 0, 'total': 5},
+            'Тестовая команда': {
+                'pass': 2, 
+                'take': 3, 
+                'defeat': 0, 
+                'total': 5, 
+                },
         }
         self.freqListWithStructForWriting = []
-        self.columns = ['Команда', 'Отдали четверть после половины', 'Забрали четверть после половины', 'Проиграли по страте', 'Всего']
+        self.columns = [
+            'Команда', 
+            'Отдали четверть после половины', 
+            'Забрали четверть после половины', 
+            'Проиграли по страте', 
+            'Всего', 
+            ]
         
     def __repr__(self) -> str:
         return f'{self.freqList}'
