@@ -3,6 +3,15 @@ from bs4 import BeautifulSoup
 from data.matchDate import MatchDate
 
 class SoupFromHTML():
+    """
+    Класс, перебирающий контент сайта в "суп" 
+
+    Атрибуты:
+    ----------
+    dateString: 
+    
+ 
+    """
     def __init__(self, dateString, content) -> None:
         self.date = MatchDate(dateString)
         self.soup = BeautifulSoup(content, 'lxml')
@@ -25,7 +34,7 @@ class SoupFromHTML():
                 self.findMatch = [self.stopMatch] + list(self.stopMatch.find_all_previous('div', class_ = 'event__match'))
                 return self.findMatch
     
-
+    
     def findStopMatch(self):
         """Получает дату и находит последний матч, перебирая все времена, в которых играют команды"""
         self.timeList = ['01:00', '01:30', '02:30', '02:30', '03:00', '03:30', '04:00', '04:30', '05:00',

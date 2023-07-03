@@ -1,4 +1,5 @@
 class FrequencyList(): 
+    """Лист рассчёта частоты отыгрывания каждой команды"""
     def __init__(self) -> None:
         self.freqList = {
             'Тестовая команда': {
@@ -60,4 +61,9 @@ class FrequencyList():
     
     def fillDataFrameBeforeSave(self):
         for item in self.freqList:
-            self.freqListWithStructForWriting.append([item, self.freqList[item]['pass'], self.freqList[item]['take'], self.freqList[item]['defeat'], self.freqList[item]['total']])
+            self.freqListWithStructForWriting.append([
+                item, self.freqList[item]['pass'], 
+                self.freqList[item]['take'], 
+                self.freqList[item]['defeat'], 
+                self.freqList[item]['total'],
+            ])

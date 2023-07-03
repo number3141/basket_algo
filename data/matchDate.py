@@ -1,8 +1,22 @@
 from datetime import datetime
 
 class MatchDate(): 
-    def __init__(self, stringDate) -> None:
-        self.dateList = stringDate.split('.')
+    """
+    Класс, содержащий дату матча 
+
+    Атрибуты: 
+    ----------
+    date_str : str
+        Дата, с какого дня нужно начать "собирать" матчи
+
+    Методы:
+    ----------
+    decDate()
+        Отнимает от текущей даты 1 день
+        
+    """
+    def __init__(self, date_str) -> None:
+        self.dateList = date_str.split('.')
         self.day = int(self.dateList[0])
         self.month = int(self.dateList[1])
         self.date = datetime(2022, self.month, self.day)
@@ -13,7 +27,7 @@ class MatchDate():
 
 
     def getDay(self):
-        return self.day if self.day >= 10 else f'0{self.day}' 
+        return self.day if self.day >= 10 else f'0{self.day}'  
     
 
     def getMonth(self): 
@@ -21,6 +35,13 @@ class MatchDate():
 
 
     def decDate(self): 
+        """
+        Отнимает от текущей даты 1 день
+        
+        Не принимает аргументов, работает с датой, 
+        которую передали при создании экземпляра объекта
+
+        """
         if self.day == 1: 
             if self.month == 1:
                 self.day = 31 

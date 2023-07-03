@@ -1,4 +1,4 @@
-"""Файлы, связанные с работой с данными"""
+"""Файлы, связанные с работой над данными"""
 from .connection import Connection
 from .frequencyList import FrequencyList
 from .match import Match

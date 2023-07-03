@@ -5,7 +5,7 @@ class MatchList():
         self.columns = ['Дата', "Команды", "1", '2', '3', '4', 'Итог']
 
     def __repr__(self) -> str:
-        return f'Матч-лист {self.frame}'
+        return f'Матч-лист {self.dataList}'
 
     def addMatchInList(self, match):
         self.dataList.append(match) 
