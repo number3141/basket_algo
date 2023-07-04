@@ -6,7 +6,7 @@ dpg.create_context()
 dpg.create_viewport(title='Custom Title', width=600, height=300, clear_color=(192,192,192,255))
 
 
-class Window(): 
+class GraphInterface(): 
     def __init__(self) -> None:
         #  Установка шрифта
         with dpg.font_registry():

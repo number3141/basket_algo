@@ -1,13 +1,16 @@
 # from PyQt5.QtWidgets import QApplication, QFileDialog, QMessageBox
 
 from data import Connection, FrequencyList, Match, MatchList, SoupFromHTML, SaveData
-from display import Window, save_user_settings, load_user_settings
+from display import GraphInterface, save_user_settings, load_user_settings
 
 import dearpygui.dearpygui as dpg
 import time
 
 
-class StartWindow(Window): 
+
+
+
+class MainProgram(GraphInterface): 
     """
     Класс, открывающий окно приложения для парсинга
 
@@ -20,7 +23,7 @@ class StartWindow(Window):
     getWebPageContent() 
         Открывает соединение с сайтом 
 
-    """        
+    """         
     def start_program(self):
         self.getWebPageContent()
         self.startCookedSoupFromSite()
@@ -67,20 +70,13 @@ class StartWindow(Window):
             dpg.delete_item(item='error_data')
         else: 
 
-            # with dpg.popup(parent='main_table', mousebutton=dpg.mvMouseButton_Left,  modal=True, tag="modal_id"):
-            #     dpg.add_text('Внимание! Нечего сохранять!')
-                # dpg.add_button(label="Close", callback=lambda: dpg.configure_item("modal_id", show=False))
-
             self.matchList.fillDataFrameBeforeSave()
             self.freqList.fillDataFrameBeforeSave()
 
             saveMatches = SaveData()
             saveMatches.addFrame(self.matchList.dataListWithStructForWriting, self.matchList.columns, 'MatchList')
-            # saveMatches.addFrame(self.freqList.freqListWithStructForWriting, self.freqList.columns, 'FreqList')
-            
+            saveMatches.addFrame(self.freqList.freqListWithStructForWriting, self.freqList.columns, 'FreqList')
             saveMatches.saveInExcel(path)
-            
-            # QMessageBox.information(self, 'Успешно', 'Файл успешно сохранён')
             print('Сохранил!')
 
     
@@ -93,11 +89,7 @@ class StartWindow(Window):
 
 
 def startApp(): 
-    # app = QApplication([])
-    # Исп. как контейнер 
-    window = StartWindow()
-    # window.show()
-    # app.exec_()
+    window = MainProgram()
 
 if __name__ == '__main__':
     startApp()
