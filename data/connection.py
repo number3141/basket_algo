@@ -6,55 +6,32 @@ from selenium.webdriver.support import expected_conditions as EC
 from .driver import Driver
 
 
+# TODO - Сделал доп. класс-наследик от Connection для баскетбольного сайта
+
+
+
 class Connection(): 
-    def __init__(self, url, date) -> None:
-        self.url = url 
-        self.date = date
-        self.startConnect()
-        self.takeContent()
-        self.closeConnect()
-        
+    """
+    Класс, устанавливающий соединение с url c помощью selenium 
+
+    Аргументы
+    ----------
+    - url - url с которым нужно определить соединение 
+    """
+    def __init__(self, url) -> None:
+        self.url = url
+        self.driver = Driver().getDriver()
+       
 
     def startConnect(self): 
         """Начинает соединение с url
         TODO - Сделать выбор браузера (browser)
         """
-        self.driver = Driver().getDriver()
         self.driver.get(self.url)
-           
-  
         self.main_status = self.driver.requests[0].response.status_code
         while self.main_status != 200:
             self.driver.refresh() 
             
-
-    def takeContent(self): 
-        """Забирает контент со страницы"""    
-        try:
-            while True:
-                # Если на странице есть матч с датой пользователя 
-                if self.driver.find_element(by=By.XPATH, value = f"""//div[contains(text(), '{self.date}')]"""): 
-                    break
-
-                self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-                self.element = WebDriverWait(self.driver, 10).until(
-                    EC.element_to_be_clickable((By.CSS_SELECTOR, ".event__more--static"))
-                )
-
-                self.element.click()
-
-                # Пока у элемента не пропадёт класс loading  
-                WebDriverWait(self.driver, 10).until_not(
-                    EC.text_to_be_present_in_element_attribute(
-                    (By.TAG_NAME, "body"), "class", "loading")
-                )
-        finally:
-            self.content = self.driver.page_source
-    
-
-    def getContent(self): 
-        return self.content
-    
 
     def closeConnect(self): 
         self.driver.quit()
@@ -65,11 +42,71 @@ class Connection():
     
 
 
-# class ContentFinder(): 
-#     def __init__(self) -> None:
-        
+class ContentEngine():    
+    """
+    Класс для работы с контентом сайта
+
+    Атрибуты
+    ----------
+    - connection - Экземпляр объекта Connection 
+    """
+    def __init__(self, connection) -> None:
+        self.connection = connection
+        self.content = ''
+    
+    def get_content(self): 
+        if self.content == '':
+            self.content = self.connection.driver.page_source
+        return self.content
 
 
-if __name__ == '__main__': 
-    newCon = Connection('https://www.flashscorekz.com/basketball/usa/nba/results/')
-    print(help(newCon.takeContent))
+class ContentEngineBasket(ContentEngine):
+    """
+    Класс для работы с контентом сайта flaschscore 
+
+    Аргументы 
+    ----------
+    - connection - Экземпляр объекта Connection
+    - date - Дата, до которой нужно найти все матчи
+    """
+    def __init__(self, connection) -> None:
+        super().__init__(connection)
+
+
+    def push_down_btn_while_is_not_it(self, it, css_class_btn = 'event__more--static'): 
+        """
+        Метод, нажимающий кнопку "Листать вниз", пока не найдёт матч с текстом it 
+
+        Аргументы
+        ----------
+        - it (str) - Текст, найдя который, функция вернёт разметку страницы 
+        - css_class_btn - CSS-класс кнопки, на которую нужно нажимать
+        """
+        try:
+            while True:
+                print('рАБОТАЮ!')
+                # Если на странице есть матч с датой пользователя 
+                if self.connection.driver.find_element(by=By.XPATH, value = f"""//div[contains(text(), '{it}')]"""): 
+                    break
+
+                self.connection.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+                self.element = WebDriverWait(self.connection.driver, 10).until(
+                    EC.element_to_be_clickable((By.CSS_SELECTOR, f".{css_class_btn}"))
+                )
+
+                self.element.click()
+
+                # Пока у элемента не пропадёт класс loading  
+                WebDriverWait(self.connection.driver, 10).until_not(
+                    EC.text_to_be_present_in_element_attribute(
+                    (By.TAG_NAME, "body"), "class", "loading")
+                )
+        finally:
+            return self.connection.driver.page_source
+
+
+# if __name__ == '__main__': 
+    # newCon = BaskConnection('https://www.flashscorekz.com/basketball/usa/nba/results/')
+    # print(help(newCon.takeContent))
+
+

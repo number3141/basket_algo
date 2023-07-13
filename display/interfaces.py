@@ -59,18 +59,22 @@ class GraphInterface():
       
 
     def fillTable(self, match): 
-       """
-       Функция-обёртка, которая поочерёдно сохраняет данные для каждой команды в матче 
+        """
+        Функция-обёртка, которая поочерёдно сохраняет данные для каждой команды в матче 
 
         Аргументы 
             ----------
             - match (dict) - словарь с данными, которые будут добавлены в таблицу  
-       """
-       self.createRowsWithMatchData(match, 'Home')
-       self.createRowsWithMatchData(match, 'Away') 
+        """
+        home_team_name = match.get_name_home_team()
+        away_team_name = match.get_name_away_team()
+        points_home = match.get_points_home()
+        points_away = match.get_points_away()
+        self.createRowsWithMatchData(match, home_team_name, points_home)
+        self.createRowsWithMatchData(match, away_team_name, points_away) 
 
 
-    def createRowsWithMatchData(self, match, prefix):
+    def createRowsWithMatchData(self, match, team_name, points_team):
         """
         Функия для заполнения таблицы со всеми матчами
 
@@ -80,15 +84,19 @@ class GraphInterface():
         - prefix (str) - строка "Home" или "Away" 
         
         """
+
+        match_date = match.get_match_date()
+        match_result = match.get_result_match() 
+
         with dpg.table_row(parent='main_table'):
-            dpg.add_text(match['matchDate'])
-            dpg.add_text(match[f'name{prefix}'])
+            dpg.add_text(match_date)
+            dpg.add_text(team_name)
             # Добавление очков (4 четверти)
-            dpg.add_text(str(match[f'point{prefix}'][0]))
-            dpg.add_text(str(match[f'point{prefix}'][1]))
-            dpg.add_text(str(match[f'point{prefix}'][2]))
-            dpg.add_text(str(match[f'point{prefix}'][3]))
-            dpg.add_text(str(match['result']))
+            dpg.add_text(str(points_team[0]))
+            dpg.add_text(str(points_team[1]))
+            dpg.add_text(str(points_team[2]))
+            dpg.add_text(str(points_team[3]))
+            dpg.add_text(match_result)
 
 
     def fillFreqTable(self, match): 

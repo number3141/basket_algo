@@ -4,27 +4,21 @@ import re
 class Match: 
     def __init__(self, soup):
         self.soup = soup
-        self.data = {
-            'matchDate' : self.findMatchData(), 
-            'nameHome': self.findTeamName('home'), 
-            'nameAway': self.findTeamName('away'), 
-            'pointHome': self.cutPoint('home'), 
-            'pointAway': self.cutPoint('away'),
-            'loser': '',
-            'winner': '',
-            'result': '', 
-        }
-    
+        self.match_date = self.findMatchData()
+        self.name_home = self.findTeamName('home')
+        self.name_away = self.findTeamName('away')
+        self.point_home = self.cutPoint('home')
+        self.point_away = self.cutPoint('away')
+        self.loser = ''
+        self.winner = ''
+        self.result = ''
+
 
     def isAppropriateMatch(self):
-        if any([self.data['result'] == 'Заход_3', self.data['result'] == 'Заход_4', self.data['result'] == 'Поражение']):
+        if any([self.result == 'Заход_3', self.result == 'Заход_4', self.result == 'Поражение']):
             return True 
         return False
         
-
-    def getData(self):
-        return self.data
-
 
     def findMatchData(self): 
         """Извлекает дату матча из объекта BS4"""
@@ -33,10 +27,12 @@ class Match:
 
 
     def findTeamName(self, team):
-        """Извлекает имя команды по префиксу *team* """
-        # event__participant--home / event__participant--away
-        teamName = self.soup.find('div', class_=f'event__participant--{team}').text
-        return teamName 
+        """
+        Извлекает имя команды по префиксу *team* 
+
+        event__participant--home / event__participant--away
+        """
+        return self.soup.find('div', class_=f'event__participant--{team}').text
 
 
     def cutPoint(self, team): 
@@ -63,32 +59,52 @@ class Match:
     def calcResult(self):
         self.winnerList = []
         for i in list(range(4)): 
-            if self.data['pointHome'][i] > self.data['pointAway'][i]: 
-                self.winnerList.append(self.data['nameHome'])
+            if self.point_home[i] > self.point_away[i]: 
+                self.winnerList.append(self.name_home)
             else: 
-                self.winnerList.append(self.data['nameAway'])
+                self.winnerList.append(self.name_away)
         
         if self.winnerList[0] == self.winnerList[1]:
-            self.data['loser'] = self.winnerList[0]
+            self.loser = self.winnerList[0]
             if self.winnerList[0] != self.winnerList[2]:
-                self.data['winner'] = self.winnerList[2]
-                self.data['result'] = 'Заход_3'
+                self.winner = self.winnerList[2]
+                self.result = 'Заход_3'
                 return
             elif self.winnerList[0] != self.winnerList[3]:
-                self.data['winner'] = self.winnerList[3]
-                self.data['result'] = 'Заход_4'
+                self.winner = self.winnerList[3]
+                self.result = 'Заход_4'
                 return
             else:
-                self.data['result'] = 'Поражение'
+                self.result = 'Поражение'
                 return
         else: 
-            self.data['result'] = 'Не подходит'
+            self.result = 'Не подходит'
             return
 
+    
+    def get_result_match(self):
+        return self.result
 
-    def getData(self): 
-        return self.data
+    def get_match_loser(self):
+        return self.loser
+    
+    def get_match_winner(self):
+        return self.winner
 
+    def get_match_date(self): 
+        return self.match_date
+    
+    def get_name_home_team(self):
+        return self.name_home
+
+    def get_name_away_team(self): 
+        return self.name_away
+
+    def get_points_home(self): 
+        return self.point_home
+
+    def get_points_away(self): 
+        return self.point_away
 
     def __repr__(self) -> str:
-        return f"Матч {self.data}"
+        return f"Матч {self.name_home} and {self.name_away}"

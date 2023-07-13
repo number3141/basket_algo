@@ -24,34 +24,41 @@ class FrequencyList():
     def getData(self): 
         return self.freqList
 
-    def addTeamInList(self, matchData): 
-        for item in [matchData['nameHome'], matchData['nameAway']]: 
+    def addTeamInList(self, match): 
+
+        home_team_name = match.get_name_home_team()
+        away_team_name = match.get_name_home_team()
+        match_result = match.get_result_match() 
+        match_loser = match.get_match_loser()
+        match_winner = match.get_match_winner()
+
+        for item in [home_team_name, away_team_name]: 
             if self.freqList.get(item): 
-                if matchData['result'] == 'Поражение':
+                if match_result == 'Поражение':
                     self.freqList[item]['defeat'] += 1
                     self.freqList[item]['total'] += 1
-                elif matchData['loser'] == item: 
+                elif match_loser == item: 
                     self.freqList[item]['pass'] += 1 
                     self.freqList[item]['total'] += 1
-                elif matchData['winner'] == item: 
+                elif match_winner == item: 
                     self.freqList[item]['take'] += 1 
                     self.freqList[item]['total'] += 1
             else: 
-                if matchData['result'] == 'Поражение':
+                if match_result == 'Поражение':
                     self.freqList[item] = {
                         'pass': 0, 
                         'take': 0,
                         'defeat': 1,
                         'total': 1,
                     }
-                if matchData['loser'] == item: 
+                if match_loser == item: 
                     self.freqList[item] = {
                         'pass': 1, 
                         'take': 0,
                         'defeat': 0,
                         'total': 1,
                     }
-                elif matchData['winner'] == item: 
+                elif match_winner == item: 
                     self.freqList[item] = {
                         'pass': 0, 
                         'take': 1,

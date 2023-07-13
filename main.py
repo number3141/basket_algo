@@ -1,6 +1,6 @@
 # from PyQt5.QtWidgets import QApplication, QFileDialog, QMessageBox
 
-from data import Connection, FrequencyList, Match, MatchList, SoupFromHTML, SaveData
+from data import Connection, ContentEngineBasket, FrequencyList, Match, MatchList, SoupFromHTML, SaveData
 from display import GraphInterface, save_user_settings, load_user_settings
 
 import dearpygui.dearpygui as dpg
@@ -33,13 +33,15 @@ class MainProgram(GraphInterface):
     def getWebPageContent(self) -> None: 
         """Соединяемся с сайтом"""
         self.inputDate = dpg.get_value('date_user')
-        self.webpage = Connection('https://www.flashscorekz.com/basketball/usa/nba/results/', self.inputDate)
-
+        self.basket_connection = Connection('https://www.flashscorekz.com/basketball/usa/nba/results/')
+        self.basket_connection.startConnect()
+        self.basket_content_engine = ContentEngineBasket(self.basket_connection)
 
     def startCookedSoupFromSite(self) -> None: 
         """Создание супа из сайта"""
-        self.pageContent = self.webpage.getContent()    
+        self.pageContent = self.basket_content_engine.push_down_btn_while_is_not_it(self.inputDate)    
         self.soup = SoupFromHTML(self.inputDate, self.pageContent)
+        self.basket_connection.closeConnect()
         
 
     def calculateResultAllMatches(self): 
@@ -52,10 +54,10 @@ class MainProgram(GraphInterface):
             newMatch.calcResult()
 
             if newMatch.isAppropriateMatch():          
-                self.freqList.addTeamInList(newMatch.getData())
+                self.freqList.addTeamInList(newMatch)
 
-            self.matchList.addMatchInList(newMatch.getData())
-            self.fillTable(newMatch.getData())
+            self.matchList.addMatchInList(newMatch)
+            self.fillTable(newMatch)
         
         self.fillFreqTable(self.freqList.getData())
 
