@@ -6,10 +6,6 @@ from selenium.webdriver.support import expected_conditions as EC
 from .driver import Driver
 
 
-# TODO - Сделал доп. класс-наследик от Connection для баскетбольного сайта
-
-
-
 class Connection(): 
     """
     Класс, устанавливающий соединение с url c помощью selenium 
@@ -41,7 +37,6 @@ class Connection():
         return f'Соединение с сайтом {self.url}'
     
 
-
 class ContentEngine():    
     """
     Класс для работы с контентом сайта
@@ -53,6 +48,7 @@ class ContentEngine():
     def __init__(self, connection) -> None:
         self.connection = connection
         self.content = ''
+    
     
     def get_content(self): 
         if self.content == '':
@@ -84,7 +80,6 @@ class ContentEngineBasket(ContentEngine):
         """
         try:
             while True:
-                print('рАБОТАЮ!')
                 # Если на странице есть матч с датой пользователя 
                 if self.connection.driver.find_element(by=By.XPATH, value = f"""//div[contains(text(), '{it}')]"""): 
                     break

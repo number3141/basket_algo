@@ -1,13 +1,10 @@
 # from PyQt5.QtWidgets import QApplication, QFileDialog, QMessageBox
 
-from data import Connection, ContentEngineBasket, FrequencyList, Match, MatchList, SoupFromHTML, SaveData
+from data import Connection, ContentEngineBasket, FrequencyList, Match, MatchListBasket, SoupFromHTML, SaveData
 from display import GraphInterface, save_user_settings, load_user_settings
 
 import dearpygui.dearpygui as dpg
 import time
-
-
-
 
 
 class MainProgram(GraphInterface): 
@@ -46,7 +43,7 @@ class MainProgram(GraphInterface):
 
     def calculateResultAllMatches(self): 
         self.allMatches = self.soup.returnAllFoundMatches()
-        self.matchList = MatchList()
+        self.matchList = MatchListBasket()
         self.freqList = FrequencyList()
 
         for item in self.allMatches: 
