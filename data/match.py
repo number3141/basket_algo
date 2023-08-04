@@ -5,14 +5,84 @@ class Match:
     def __init__(self, soup):
         self.soup = soup
         self.match_date = self.findMatchData()
-        self.name_home = self.findTeamName('home')
-        self.name_away = self.findTeamName('away')
-        self.point_home = self.cutPoint('home')
-        self.point_away = self.cutPoint('away')
+        self.name_home = self.findTeamNameHome()
+        self.name_away = self.findTeamNameAway()
+        self.point_home = self.cutPointHome()
+        self.point_away = self.cutPointAway()
         self.loser = ''
         self.winner = ''
         self.result = ''
 
+    
+    def findMatchData(self):
+        raise NotImplementedError(
+            f"Определите findMatchData в {self.__class__.__name__}"
+        )
+    
+
+    def findTeamNameHome(self):
+        raise NotImplementedError(
+            f"Определите findTeamNameHome в {self.__class__.__name__}"
+        )
+    
+
+    def findTeamNameAway(self):
+        raise NotImplementedError(
+            f"Определите findTeamNameAway в {self.__class__.__name__}"
+        )
+    
+
+    def cutPointHome(self):
+        raise NotImplementedError(
+            f"Определите cutPointHome в {self.__class__.__name__}"
+        )
+    
+
+    def cutPointAway(self):
+        raise NotImplementedError(
+            f"Определите cutPointAway в {self.__class__.__name__}"
+        )
+
+
+    def get_result_match(self):
+        return self.result
+
+
+    def get_match_loser(self):
+        return self.loser
+    
+
+    def get_match_winner(self):
+        return self.winner
+
+
+    def get_match_date(self): 
+        return self.match_date
+    
+
+    def get_name_home_team(self):
+        return self.name_home
+
+
+    def get_name_away_team(self): 
+        return self.name_away
+
+
+    def get_points_home(self): 
+        return self.point_home
+
+
+    def get_points_away(self): 
+        return self.point_away
+
+
+    def __repr__(self) -> str:
+        return f"Матч {self.name_home} and {self.name_away}"
+
+
+class MatchBasket(Match): 
+    def __init__(self, soup):
+        super().__init__(soup)
 
     def isAppropriateMatch(self):
         if any([self.result == 'Заход_3', self.result == 'Заход_4', self.result == 'Поражение']):
@@ -26,26 +96,32 @@ class Match:
         return str(data) 
 
 
-    def findTeamName(self, team):
-        """
-        Извлекает имя команды по префиксу *team* 
+    def findTeamNameHome(self):
+        return self.soup.find('div', class_=f'event__participant--home').text
+    
 
-        event__participant--home / event__participant--away
-        """
-        return self.soup.find('div', class_=f'event__participant--{team}').text
+    def findTeamNameAway(self):
+        return self.soup.find('div', class_=f'event__participant--away').text
 
 
-    def cutPoint(self, team): 
-        """Возвращает лист очков команды по префиксу"""
+    def cutPointHome(self): 
+        """Возвращает лист очков домашней команды"""
         self.points = []
         for part in [1, 2, 3, 4]: 
-            self.pointTeamInPart = self.selectPointInPartByPlayField(team, part)
+            # self.pointTeamInPart = self.selectPointInPartByPlayField(team, part)
+            self.pointTeamInPart = self.soup.select(f'.event__part--home' + f'.event__part--{part}')
             self.points.append(self.findDecimalNumImStr(self.pointTeamInPart))
         return self.points
+    
 
-
-    def selectPointInPartByPlayField(self, playField, part):
-        return self.soup.select(f'.event__part--{playField}' + f'.event__part--{part}')
+    def cutPointAway(self): 
+        """Возвращает лист очков гостевой команды"""
+        self.points = []
+        for part in [1, 2, 3, 4]: 
+            # self.pointTeamInPart = self.selectPointInPartByPlayField(team, part)
+            self.pointTeamInPart = self.soup.select(f'.event__part--away' + f'.event__part--{part}')
+            self.points.append(self.findDecimalNumImStr(self.pointTeamInPart))
+        return self.points
 
 
     def findDecimalNumImStr(self, findStr):
@@ -58,7 +134,7 @@ class Match:
 
     def calcResult(self):
         self.winnerList = []
-        for i in list(range(4)): 
+        for i in [0, 1, 2, 3]: 
             if self.point_home[i] > self.point_away[i]: 
                 self.winnerList.append(self.name_home)
             else: 
@@ -82,29 +158,4 @@ class Match:
             return
 
     
-    def get_result_match(self):
-        return self.result
-
-    def get_match_loser(self):
-        return self.loser
     
-    def get_match_winner(self):
-        return self.winner
-
-    def get_match_date(self): 
-        return self.match_date
-    
-    def get_name_home_team(self):
-        return self.name_home
-
-    def get_name_away_team(self): 
-        return self.name_away
-
-    def get_points_home(self): 
-        return self.point_home
-
-    def get_points_away(self): 
-        return self.point_away
-
-    def __repr__(self) -> str:
-        return f"Матч {self.name_home} and {self.name_away}"

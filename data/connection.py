@@ -7,6 +7,29 @@ from .driver import Driver
 
 
 class Connection(): 
+    def __init__(self, url) -> None:
+        self.url = url
+
+
+    def start_connect(self): 
+        raise NotImplementedError(
+            f"Создайте метод start_connect в классе {self.__class__.__name__}"
+        )
+    
+
+    def close_connect(self): 
+        raise NotImplementedError(
+            f"Создайте метод close_connect в классе {self.__class__.__name__}"
+        )
+    
+
+    def get_content(self):
+        raise NotImplementedError(
+            f"Создайте метод get_content в классе {self.__class__.__name__}"
+        )
+
+
+class Connection_Selenium(Connection): 
     """
     Класс, устанавливающий соединение с url c помощью selenium 
 
@@ -15,11 +38,11 @@ class Connection():
     - url - url с которым нужно определить соединение 
     """
     def __init__(self, url) -> None:
-        self.url = url
+        super().__init__(url)
         self.driver = Driver().getDriver()
        
 
-    def startConnect(self): 
+    def start_connect(self): 
         """Начинает соединение с url
         TODO - Сделать выбор браузера (browser)
         """
@@ -29,47 +52,42 @@ class Connection():
             self.driver.refresh() 
             
 
-    def closeConnect(self): 
+    def close_connect(self): 
         self.driver.quit()
     
 
-    def __repr__(self) -> str:
-        return f'Соединение с сайтом {self.url}'
+    def get_content(self):
+        return self.driver.page_source
     
 
-class ContentEngine():    
+class Interface_Scraper_HTML():
     """
-    Класс для работы с контентом сайта
-
-    Атрибуты
-    ----------
-    - connection - Экземпляр объекта Connection 
+    Класс, создающий интерфейс для скрапперов сайта, которые ищут нужный HTML
+    
+    Для работы каждого метода требуется рабочее соединение (Connection).   
+    Возможны дополнительные параметры
+    
     """
+    def get_result_flashcsore(self, connection, date): 
+        return Scraper_HTML_Selenium_Flashscore(connection).get_need_html(it = date) 
+        
+ 
+class Scraper_HTML(): 
     def __init__(self, connection) -> None:
         self.connection = connection
-        self.content = ''
-    
-    
-    def get_content(self): 
-        if self.content == '':
-            self.content = self.connection.driver.page_source
-        return self.content
+
+    def get_need_html(self): 
+        raise NotImplementedError(
+            f'Установите метод get_need_html у класса {self.__class__.__name__}'
+        )
 
 
-class ContentEngineBasket(ContentEngine):
-    """
-    Класс для работы с контентом сайта flaschscore 
-
-    Аргументы 
-    ----------
-    - connection - Экземпляр объекта Connection
-    - date - Дата, до которой нужно найти все матчи
-    """
+class Scraper_HTML_Selenium_Flashscore(Scraper_HTML): 
     def __init__(self, connection) -> None:
         super().__init__(connection)
 
 
-    def push_down_btn_while_is_not_it(self, it, css_class_btn = 'event__more--static'): 
+    def get_need_html(self, it, css_class_btn = 'event__more--static'): 
         """
         Метод, нажимающий кнопку "Листать вниз", пока не найдёт матч с текстом it 
 

@@ -1,6 +1,6 @@
 # from PyQt5.QtWidgets import QApplication, QFileDialog, QMessageBox
 
-from data import Connection, ContentEngineBasket, FrequencyList, Match, MatchListBasket, SoupFromHTML, SaveData
+from data import Connection_Selenium, Interface_Scraper_HTML, FrequencyList, MatchBasket, MatchListBasket, SoupFromHTML, SaveData
 from display import GraphInterface, save_user_settings, load_user_settings
 
 import dearpygui.dearpygui as dpg
@@ -30,15 +30,16 @@ class MainProgram(GraphInterface):
     def getWebPageContent(self) -> None: 
         """Соединяемся с сайтом"""
         self.inputDate = dpg.get_value('date_user')
-        self.basket_connection = Connection('https://www.flashscorekz.com/basketball/usa/nba/results/')
-        self.basket_connection.startConnect()
-        self.basket_content_engine = ContentEngineBasket(self.basket_connection)
+        self.basket_connection = Connection_Selenium('https://www.flashscorekz.com/basketball/usa/nba/results/')
+        self.basket_connection.start_connect()
+        self.scrap_interface = Interface_Scraper_HTML()
+
 
     def startCookedSoupFromSite(self) -> None: 
         """Создание супа из сайта"""
-        self.pageContent = self.basket_content_engine.push_down_btn_while_is_not_it(self.inputDate)    
+        self.pageContent = self.scrap_interface.get_result_flashcsore(self.basket_connection, self.inputDate)   
         self.soup = SoupFromHTML(self.inputDate, self.pageContent)
-        self.basket_connection.closeConnect()
+        self.basket_connection.close_connect()
         
 
     def calculateResultAllMatches(self): 
@@ -47,7 +48,7 @@ class MainProgram(GraphInterface):
         self.freqList = FrequencyList()
 
         for item in self.allMatches: 
-            newMatch = Match(item)
+            newMatch = MatchBasket(item)
             newMatch.calcResult()
 
             if newMatch.isAppropriateMatch():          
