@@ -4,43 +4,43 @@ import re
 class Match: 
     def __init__(self, soup):
         self.soup = soup
-        self.match_date = self.findMatchData()
-        self.name_home = self.findTeamNameHome()
-        self.name_away = self.findTeamNameAway()
-        self.point_home = self.cutPointHome()
-        self.point_away = self.cutPointAway()
+        self.match_date = self.find_match_data()
+        self.name_home = self.find_team_name_home()
+        self.name_away = self.find_team_name_away()
+        self.point_home = self.cut_point_home()
+        self.point_away = self.cut_point_away()
         self.loser = ''
         self.winner = ''
         self.result = ''
 
     
-    def findMatchData(self):
+    def find_match_data(self):
         raise NotImplementedError(
-            f"Определите findMatchData в {self.__class__.__name__}"
+            f"Определите find_match_data в {self.__class__.__name__}"
         )
     
 
-    def findTeamNameHome(self):
+    def find_team_name_home(self):
         raise NotImplementedError(
-            f"Определите findTeamNameHome в {self.__class__.__name__}"
+            f"Определите find_team_name_home в {self.__class__.__name__}"
         )
     
 
-    def findTeamNameAway(self):
+    def find_team_name_away(self):
         raise NotImplementedError(
-            f"Определите findTeamNameAway в {self.__class__.__name__}"
+            f"Определите find_team_name_away в {self.__class__.__name__}"
         )
     
 
-    def cutPointHome(self):
+    def cut_point_home(self):
         raise NotImplementedError(
-            f"Определите cutPointHome в {self.__class__.__name__}"
+            f"Определите cut_point_home в {self.__class__.__name__}"
         )
     
 
-    def cutPointAway(self):
+    def cut_point_away(self):
         raise NotImplementedError(
-            f"Определите cutPointAway в {self.__class__.__name__}"
+            f"Определите cut_point_away в {self.__class__.__name__}"
         )
 
 
@@ -90,21 +90,21 @@ class MatchBasket(Match):
         return False
         
 
-    def findMatchData(self): 
+    def find_match_data(self): 
         """Извлекает дату матча из объекта BS4"""
         data = self.soup.find('div', class_='event__time').text
         return str(data) 
 
 
-    def findTeamNameHome(self):
+    def find_team_name_home(self):
         return self.soup.find('div', class_=f'event__participant--home').text
     
 
-    def findTeamNameAway(self):
+    def find_team_name_away(self):
         return self.soup.find('div', class_=f'event__participant--away').text
 
 
-    def cutPointHome(self): 
+    def cut_point_home(self): 
         """Возвращает лист очков домашней команды"""
         self.points = []
         for part in [1, 2, 3, 4]: 
@@ -114,7 +114,7 @@ class MatchBasket(Match):
         return self.points
     
 
-    def cutPointAway(self): 
+    def cut_point_away(self): 
         """Возвращает лист очков гостевой команды"""
         self.points = []
         for part in [1, 2, 3, 4]: 
@@ -156,6 +156,3 @@ class MatchBasket(Match):
         else: 
             self.result = 'Не подходит'
             return
-
-    
-    

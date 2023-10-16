@@ -1,3 +1,5 @@
+import abc
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
@@ -6,36 +8,41 @@ from selenium.webdriver.support import expected_conditions as EC
 from .driver import Driver
 
 
-class Connection(): 
+class Connection(abc.ABC): 
+    """
+    Абстрактный класс, позволяющий создать соединение с сайтом
+
+    Аргументы
+    ----------
+    - url (str) - Адрес сайта 
+    """
     def __init__(self, url) -> None:
         self.url = url
 
 
+    @abc.abstractmethod
     def start_connect(self): 
-        raise NotImplementedError(
-            f"Создайте метод start_connect в классе {self.__class__.__name__}"
-        )
+        """Устанавливает соединение с сайтом"""
     
 
+    @abc.abstractmethod
     def close_connect(self): 
-        raise NotImplementedError(
-            f"Создайте метод close_connect в классе {self.__class__.__name__}"
-        )
+        """Разрывает соединение с сайтом"""
     
 
+    @abc.abstractmethod 
     def get_content(self):
-        raise NotImplementedError(
-            f"Создайте метод get_content в классе {self.__class__.__name__}"
-        )
+        """Возвращает всю разметку HTML"""
+
 
 
 class Connection_Selenium(Connection): 
     """
-    Класс, устанавливающий соединение с url c помощью selenium 
+    Класс, устанавливающий соединение с сайтом c помощью selenium 
 
     Аргументы
     ----------
-    - url - url с которым нужно определить соединение 
+    - url (str) - Адрес сайта 
     """
     def __init__(self, url) -> None:
         super().__init__(url)
@@ -69,12 +76,26 @@ class Interface_Scraper_HTML():
     
     """
     def get_result_flashcsore(self, connection, date): 
+        """
+        Получает нужную разметку с портала Flashscore 
+
+        Аргументы
+        -----------
+        - connection - Текущее соединение с сайтом Flashscore 
+        - date - Дата матча, до которого нужно "спарсить" данные 
+        """
         return Scraper_HTML_Selenium_Flashscore(connection).get_need_html(it = date) 
         
  
 class Scraper_HTML(): 
+    """
+    Абстрактный класс
+
+    Каждый наследник - это отдельный способ создать 
+    """
     def __init__(self, connection) -> None:
         self.connection = connection
+
 
     def get_need_html(self): 
         raise NotImplementedError(
@@ -116,10 +137,3 @@ class Scraper_HTML_Selenium_Flashscore(Scraper_HTML):
                 )
         finally:
             return self.connection.driver.page_source
-
-
-# if __name__ == '__main__': 
-    # newCon = BaskConnection('https://www.flashscorekz.com/basketball/usa/nba/results/')
-    # print(help(newCon.takeContent))
-
-

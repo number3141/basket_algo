@@ -1,6 +1,5 @@
-# from PyQt5.QtWidgets import QApplication, QFileDialog, QMessageBox
-
-from data import Connection_Selenium, Interface_Scraper_HTML, FrequencyList, MatchBasket, MatchListBasket, SoupFromHTML, SaveData
+from parse_web import Connection_Selenium, Interface_Scraper_HTML, Interface_Soup_From_HTML
+from data import FrequencyList, MatchListBasket, SaveData, MatchBasket
 from display import GraphInterface, save_user_settings, load_user_settings
 
 import dearpygui.dearpygui as dpg
@@ -9,7 +8,7 @@ import time
 
 class MainProgram(GraphInterface): 
     """
-    Класс, открывающий окно приложения для парсинга
+    Класс-фасад, открывающий окно приложения для парсинга
 
     Методы
     ----------
@@ -33,26 +32,32 @@ class MainProgram(GraphInterface):
         self.basket_connection = Connection_Selenium('https://www.flashscorekz.com/basketball/usa/nba/results/')
         self.basket_connection.start_connect()
         self.scrap_interface = Interface_Scraper_HTML()
+        self.create_soup_interface = Interface_Soup_From_HTML()
 
 
     def startCookedSoupFromSite(self) -> None: 
         """Создание супа из сайта"""
         self.pageContent = self.scrap_interface.get_result_flashcsore(self.basket_connection, self.inputDate)   
-        self.soup = SoupFromHTML(self.inputDate, self.pageContent)
+        self.allMatches = self.create_soup_interface.create_soup_from_flashscore(self.inputDate, self.pageContent)
         self.basket_connection.close_connect()
         
 
     def calculateResultAllMatches(self): 
-        self.allMatches = self.soup.returnAllFoundMatches()
         self.matchList = MatchListBasket()
-        self.freqList = FrequencyList()
+        self.freqList = FrequencyList([
+            'Команда', 
+            'Отдали четверть после половины', 
+            'Забрали четверть после половины', 
+            'Проиграли по страте', 
+            'Всего', 
+            ])
 
         for item in self.allMatches: 
             newMatch = MatchBasket(item)
             newMatch.calcResult()
 
             if newMatch.isAppropriateMatch():          
-                self.freqList.addTeamInList(newMatch)
+                self.freqList.add_team_in_list(newMatch)
 
             self.matchList.addMatchInList(newMatch)
             self.fillTable(newMatch)
@@ -85,7 +90,6 @@ class MainProgram(GraphInterface):
             'save_path': dpg.get_value('save_path')
         }
         save_user_settings(user_data)
-
 
 
 def startApp(): 
