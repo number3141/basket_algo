@@ -13,7 +13,7 @@ class SelFlashManager(DataManager):
 
     def start_program(self, user_data): 
         self.connect.start_connect()
-        res  = self.connect.get_content()
+        res  = self.connect.get_content(user_data)
         self.connect.close_connect()
     
         data_cleaner = DataCleanerSelFlash(user_data, res)

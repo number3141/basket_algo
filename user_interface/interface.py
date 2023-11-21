@@ -21,4 +21,7 @@ class Interface(ABC):
     def save_freq_list(self, freq_list): 
         pass 
 
+    @abstractmethod
+    def draw_text_in_board(self, mess): 
+        pass 
 

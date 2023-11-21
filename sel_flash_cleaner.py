@@ -1,76 +1,18 @@
-import datetime
 import re
 
 from bs4 import BeautifulSoup
 
 from entity.match import Match
+from exceptions.sel_flash_exceptions import NoDataExceptions
 from present_controll.data_cleaner import DataCleaner
-
-
-# Обработчик даты для презентатора обрезания ненужного HTML 
-
-class MatchDate(): 
-    """
-    Класс, содержащий дату матча 
-
-    Атрибуты: 
-    ----------
-    date_str : str
-        Дата, с какого дня нужно начать "собирать" матчи
-
-    Методы:
-    ----------
-    decDate()
-        Отнимает от текущей даты 1 день
-        
-    """
-    def __init__(self, date_str) -> None:
-        self.dateList = date_str.split('.')
-        self.day = int(self.dateList[0])
-        self.month = int(self.dateList[1])
-        self.date = datetime.datetime(2022, self.month, self.day)
-        
-
-    def __repr__(self) -> str:
-        return f'День - {self.day}, Месяц - {self.month}'
-
-
-    def getDay(self):
-        return self.day if self.day >= 10 else f'0{self.day}'  
-    
-
-    def getMonth(self): 
-        return self.month if self.month >= 10 else f'0{self.month}'
-
-
-    def decDate(self): 
-        """
-        Отнимает от текущей даты 1 день
-        
-        Не принимает аргументов, работает с датой, 
-        которую передали при создании экземпляра объекта
-
-        """
-        if self.day == 1: 
-            if self.month == 1:
-                self.day = 31 
-                self.month = 12 
-            else: 
-                self.day = 31
-                self.month -= 1
-        else: 
-            self.day -= 1
 
 # Обрезание ненужного HTML 
 
-
 class DataCleanerSelFlash(DataCleaner):
-    """
-
-    """
-    def __init__(self, dateString, content) -> None:
+    def __init__(self, date_str, content) -> None:
         super().__init__()
-        self.date = MatchDate(dateString)
+        self.date_list = date_str.split('.')
+        self.day, self.month = [i if len(i) == 2 else f"0{i}" for i in self.date_list]
         self.dirty_data = BeautifulSoup(content, 'lxml')
         
   
@@ -104,42 +46,35 @@ class DataCleanerSelFlash(DataCleaner):
                 new_match.set_underhand(False)
                 print('Не подходит!')
 
-        
             self.clear_data.append(new_match.get_info())
            
-        
         return self.clear_data
          
 
     def cut_content(self):
         """Пока не найдёт ближайшие матчи - будет уменьшать дату"""
-        while True: 
-            self.stopMatch = self.find_stop_match()
-            if self.stopMatch: 
-                # Склеенный массив 
-                self.cutter_content = [self.stopMatch] + list(self.stopMatch.find_all_previous('div', class_ = 'event__match'))
-                break 
-    
+        self.stopMatch = self.find_stop_match()
+        self.cutter_content = [self.stopMatch] + list(self.stopMatch.find_all_previous('div', class_ = 'event__match'))
+            
     
     def find_stop_match(self):
         """Получает дату и находит последний матч, перебирая все времена, в которых играют команды"""
         self.timeList = ['01:00', '01:30', '02:30', '02:30', '03:00', '03:30', '04:00', '04:30', '05:00',
         '05:30', '06:00', '06:30', '07:00', '07:30', '08:00', '08:30', '09:00', '09:30']
         
-        while True: 
-            for time in self.timeList:
-                print(f"{self.date.getDay()}.{self.date.getMonth()} {time}")
-                self.stopMatch = self.isMatchWithDate(time)
-                if self.stopMatch: 
-                    print('Вернул матч!')
-                    return self.stopMatch
+        for time in self.timeList:
+            print(f"{self.day}.{self.month} {time}")
+            self.stopMatch = self.isMatchWithDate(time)
+            if self.stopMatch: 
+                print('Вернул матч!')
+                return self.stopMatch
+            
+        raise NoDataExceptions('Нет такой даты!') 
 
-            self.date.decDate()
     
-
     def isMatchWithDate(self, time): 
         try: 
-            stringForFind = f"{self.date.getDay()}.{self.date.getMonth()}. {time}"
+            stringForFind = f"{self.day}.{self.month}. {time}"
             # parent из-за того, что возвращается строка, а нам нужен весь матч (родитель)
             findMatch = self.dirty_data.find(string=stringForFind).parent.parent
             return findMatch
