@@ -2,35 +2,35 @@ from entity.match import Match
 
 # Адаптер, который настраивает Entity Match 
 
-
-class MatchBasket(Match): 
+class MatchBasket(Match):               
     def calc_result(self):
-        self.winnerList = []
+        self.winnerList = list()
         for i in [0, 1, 2, 3]: 
-            if self.points_home[i] > self.points_away[i]: 
-                self.winnerList.append(self.name_home)
+            if self.data.points_home[i] > self.data.points_away[i]: 
+                self.winnerList.append(self.data.name_home)
             else: 
-                self.winnerList.append(self.name_away)
-        
-        if self.winnerList[0] == self.winnerList[1]:
-            self.loser = self.winnerList[0]
-            if self.winnerList[0] != self.winnerList[2]:
-                self.winner = self.winnerList[2]
-                self.result = 'Заход_3'
-                return
-            elif self.winnerList[0] != self.winnerList[3]:
-                self.winner = self.winnerList[3]
-                self.result = 'Заход_4'
-                return
-            else:
-                self.result = 'Поражение'
-                return
-        else: 
-            self.result = 'Не подходит'
-            return
+                self.winnerList.append(self.data.name_away)
 
-    def check_match(self):
-        if any([self.result == 'Заход_3', self.result == 'Заход_4', self.result == 'Поражение']):
-            return True 
-        return False
+        if self.winnerList[0] == self.winnerList[1]:
+            print('Подходит!')
+            self.data.underhand = True
+            if self.winnerList[0] != self.winnerList[2]:
+                self.data.set_loser(self.winnerList[0])
+                self.data.set_winner(self.winnerList[2])
+                self.data.win_3 = True
+                self.data.result = True 
+            elif self.winnerList[0] != self.winnerList[3]:
+                self.data.loser = self.winnerList[0]
+                self.data.winner = self.winnerList[3]
+                self.data.win_4 = True
+                self.data.result = True
+            else:
+                self.data.loser = self.data.name_away
+                self.data.winner = self.data.name_home
+                self.data.result = False 
+        else: 
+            # Матч не подошёл 
+            self.data.underhand = False 
+        
+        return self.data.underhand 
 

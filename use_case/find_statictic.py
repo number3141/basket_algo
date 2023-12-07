@@ -7,7 +7,7 @@ from entity.match_list import Match_List
 
 
 class FindStatistic():
-    def __init__(self, data_no_check: list[Match], match_list: Match_List = Match_List(), freq_list: Freq_List = Freq_List()) -> None:
+    def __init__(self, data_no_check: list, match_list: Match_List = Match_List(), freq_list: Freq_List = Freq_List()) -> None:
         self.data_no_check = data_no_check
         self.match_list = match_list
         self.freq_list = freq_list

@@ -1,3 +1,5 @@
+#!/usr/bin/python3.12
+
 from seleniumwire import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
@@ -49,22 +51,23 @@ class HTMLConnection(ResourseConnection):
         now_date = datetime.now()
 
         for _ in range((now_date - a).days // 10):
-            self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-            self.element = self.wait.until(
-                EC.element_to_be_clickable((By.CSS_SELECTOR, ".event__more--static"))
-            )
+            try:
+                self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+                self.element = self.wait.until(
+                    EC.element_to_be_clickable((By.CSS_SELECTOR, ".event__more--static"))
+                )
 
-            self.element.click()
+                self.element.click()
 
-            # Пока у элемента не пропадёт класс loading  
-            self.wait.until_not(
-                EC.text_to_be_present_in_element_attribute(
-                (By.TAG_NAME, "body"), "class", "loading")
-            )
-        else: 
-            return self.driver.page_source
+                # Пока у элемента не пропадёт класс loading
+                self.wait.until_not(
+                    EC.text_to_be_present_in_element_attribute(
+                        (By.TAG_NAME, "body"), "class", "loading")
+                )
+            except Exception:
+                break
 
-
+        return self.driver.page_source
 
 
 if __name__ == '__main__':

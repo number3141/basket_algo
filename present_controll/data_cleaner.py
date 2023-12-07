@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from typing import Any
 
 
 class DataCleaner(ABC):
@@ -12,7 +11,7 @@ class DataCleaner(ABC):
 
     @abstractmethod
     # Подготовка данных для UseCase
-    def cleaning_data(self) -> list[str]: 
+    def cleaning_data(self) -> list: 
         pass 
 
     def set_dirty_data(self, dirty_data): 

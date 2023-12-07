@@ -1,3 +1,4 @@
+
 from exceptions.sel_flash_exceptions import NoDataExceptions
 from sel_flash_manager import SelFlashManager
 from sel_flash_interface import GraphInterface
@@ -9,7 +10,6 @@ class General():
     def __init__(self, data_manager: DataManager, interface: Interface) -> None:
         self.data_manager = data_manager
         self.interface = interface
-
 
     def start_and_draw(self, user_data): 
         try:

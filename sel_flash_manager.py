@@ -1,10 +1,11 @@
+#!/usr/bin/python3.12
+
+from entity.match import MatchBasketDTO
 from sel_flash_cleaner import DataCleanerSelFlash
 from sel_flash_connection import HTMLConnection
 from sel_flash_match import MatchBasket
 from sel_flash_usecase import SelFlashFindStatistic
 from user_interface.data_manager import DataManager
-
-
 
 
 class SelFlashManager(DataManager): 
@@ -18,7 +19,7 @@ class SelFlashManager(DataManager):
     
         data_cleaner = DataCleanerSelFlash(user_data, res)
         data_cleaner.cut_content()
-        clear_data = data_cleaner.cleaning_data(MatchBasket())
+        clear_data = data_cleaner.cleaning_data()
 
         finder_stat = SelFlashFindStatistic(clear_data)
         finder_stat.find_statistic_in_data()
