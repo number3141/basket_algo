@@ -3,14 +3,19 @@
 from entity.match import MatchBasketDTO
 from sel_flash_cleaner import DataCleanerSelFlash
 from sel_flash_connection import HTMLConnection
-from sel_flash_match import MatchBasket
+from playwright_connection import PlayWrightConnection
 from sel_flash_usecase import SelFlashFindStatistic
 from user_interface.data_manager import DataManager
 
+def create_connection(type):
+    if type == 'selenium':
+        return HTMLConnection
+    elif type == 'playwright':
+        return PlayWrightConnection
 
-class SelFlashManager(DataManager): 
-    def __init__(self) -> None:
-        self.connect = HTMLConnection('https://www.flashscorekz.com/basketball/usa/nba/results/')
+class SiteManager(DataManager):
+    def set_type_connection(self, type) -> None:
+        self.connect = create_connection(type)('https://www.flashscorekz.com/basketball/usa/nba/results/')
 
     def start_program(self, user_data): 
         self.connect.start_connect()

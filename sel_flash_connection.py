@@ -6,34 +6,31 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from present_controll.resource_connection import ResourseConnection
 
 
 # Соединение с сайтом 
-class HTMLConnection(ResourseConnection): 
+class HTMLConnection(ResourseConnection):
     def start_connect(self):
-        self.install_service = ChromeService(ChromeDriverManager().install())
-        self.driver = webdriver.Chrome(service=self.install_service)
+        install_service = ChromeService(ChromeDriverManager().install())
+        self.driver = webdriver.Chrome(service=install_service)
 
         self.driver.get(self.path)
 
-        self.main_status = self.driver.requests[0].response.status_code
+        main_status = self.driver.requests[0].response.status_code
 
-        while self.main_status != 200:
-            self.driver.refresh() 
+        while main_status != 200:
+            self.driver.refresh()
 
-
-    def close_connect(self): 
+    def close_connect(self):
         self.driver.quit()
-    
 
     def get_content(self, date_str):
         return self.get_need_html(date_str)
 
-
-    def get_need_html(self, it): 
+    def get_need_html(self, it):
         """
         Метод, нажимающий кнопку "Листать вниз", пока не найдёт матч с текстом it 
 
@@ -42,7 +39,7 @@ class HTMLConnection(ResourseConnection):
         - it (str) - Текст, найдя который, функция вернёт разметку страницы 
         """
         self.wait = WebDriverWait(self.driver, 7)
-        self.driver.maximize_window() # For maximizing window
+        self.driver.maximize_window()  # For maximizing window
         # Если на странице есть матч с датой пользователя 
 
         replace_dot_date = f"{it}.2023".replace('.', ' ')

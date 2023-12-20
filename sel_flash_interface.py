@@ -28,7 +28,10 @@ class GraphInterface(Interface):
                         with dpg.group(horizontal=True):
                             dpg.add_input_text(tag='date_user', no_spaces=True, decimal=True, width=100)
                             dpg.add_button(label="Search",
-                                           callback=lambda x: start_programm(user_data=dpg.get_value('date_user')))
+                                           callback=lambda x: start_programm(
+                                               user_data=dpg.get_value('date_user'),
+                                               type=dpg.get_value('type_connection')
+                                           ))
                             dpg.add_button(label="Save MatchTable", callback=save_match)
                             dpg.add_button(label="Save FreqTable", callback=save_freq)
 
@@ -59,6 +62,13 @@ class GraphInterface(Interface):
                     with dpg.group():
                         dpg.add_text('Name FreqTable File')
                         dpg.add_input_text(tag='freq_name', default_value=self.data['name_freq_table'])
+
+                    with dpg.group():
+                        dpg.add_text('Тип соединения:')
+                        dpg.add_combo(
+                            items=['selenium', 'playwright'],
+                            tag='type_connection',
+                            default_value='playwright')
 
                     dpg.add_button(label='Save Settings', tag='bth_save_settings', callback=self.save_settings)
 
