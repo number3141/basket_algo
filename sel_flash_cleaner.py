@@ -2,7 +2,7 @@ import re
 
 from bs4 import BeautifulSoup
 
-from entity.match import MatchBasketDTO
+from entity.match import MatchDTO, MatchBasketDTO
 from exceptions.sel_flash_exceptions import NoDataExceptions
 from present_controll.data_cleaner import DataCleaner
 
@@ -42,22 +42,20 @@ class DataCleanerSelFlash(DataCleaner):
         return self.clear_data
 
     def cut_content(self):
-        self.stopMatch = self.find_stop_match()
-        self.cutter_content = [self.stopMatch] + list(self.stopMatch.find_all_previous('div', class_='event__match'))
-
-    def find_stop_match(self):
         """Получает дату и находит последний матч, перебирая все времена, в которых играют команды"""
-        self.timeList = ['01:00', '01:30', '02:30', '02:30', '03:00', '03:30', '04:00', '04:30', '05:00',
-                         '05:30', '06:00', '06:30', '07:00', '07:30', '08:00', '08:30', '09:00', '09:30']
+        time_list = ['01:00', '01:30', '02:30', '02:30', '03:00', '03:30', '04:00', '04:30', '05:00',
+                     '05:30', '06:00', '06:30', '07:00', '07:30', '08:00', '08:30', '09:00', '09:30']
+        stop_match = None
+        for time in time_list:
+            stop_match = self.isMatchWithDate(time)
+            if stop_match:
+                break
 
-        for time in self.timeList:
-            print(f"{self.day}.{self.month} {time}")
-            self.stopMatch = self.isMatchWithDate(time)
-            if self.stopMatch:
-                print('Вернул матч!')
-                return self.stopMatch
+        if not stop_match:
+            raise NoDataExceptions('Нет такой даты!')
 
-        raise NoDataExceptions('Нет такой даты!')
+        print(stop_match)
+        self.cutter_content = [stop_match] + list(stop_match.find_all_previous('div', class_='event__match'))
 
     def isMatchWithDate(self, time):
         try:
