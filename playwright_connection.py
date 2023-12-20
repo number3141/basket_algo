@@ -10,9 +10,8 @@ class PlayWrightConnection(ResourseConnection):
         p = sync_playwright().start()
         self.browser = p.firefox.launch(headless=False)
         self.page = self.browser.new_page()
-        self.page.set_default_timeout(10_000)
+        self.page.set_default_timeout(15_000)
         self.page.goto(self.path)
-        # Здесь вставляешь свой код
 
     def get_content(self, it):
         replace_dot_date = f"{it}.2023".replace('.', ' ')

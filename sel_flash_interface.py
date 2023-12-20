@@ -11,7 +11,7 @@ class GraphInterface(Interface):
         dpg.create_context()
         dpg.create_viewport(title='Basket Parse', width=900, height=600, clear_color=(192, 192, 192, 255))
 
-    def draw_main_window(self, start_programm, save_match, save_freq):
+    def draw_main_window(self, start_programm, save_freq):
 
         # Нет поддержки кириллицы в сборке  
         with dpg.font_registry():
@@ -32,18 +32,8 @@ class GraphInterface(Interface):
                                                user_data=dpg.get_value('date_user'),
                                                type=dpg.get_value('type_connection')
                                            ))
-                            dpg.add_button(label="Save MatchTable", callback=save_match)
                             dpg.add_button(label="Save FreqTable", callback=save_freq)
 
-                    # Таблица команд
-                    with dpg.table(tag='main_table'):
-                        dpg.add_table_column(label='Date')
-                        dpg.add_table_column(label='TeamName')
-                        dpg.add_table_column(label='1 part')
-                        dpg.add_table_column(label='2 part')
-                        dpg.add_table_column(label='3 part')
-                        dpg.add_table_column(label='4 part')
-                        dpg.add_table_column(label='Result')
                     # Таблица частоты
                     with dpg.table(tag='freq_table'):
                         dpg.add_table_column(label='Team')
@@ -55,10 +45,6 @@ class GraphInterface(Interface):
 
                 # Страница настроек 
                 with dpg.tab(label='Settings'):
-                    with dpg.group():
-                        dpg.add_text('Name MatchTable File')
-                        dpg.add_input_text(tag='match_name', default_value=self.data['name_match_table'])
-
                     with dpg.group():
                         dpg.add_text('Name FreqTable File')
                         dpg.add_input_text(tag='freq_name', default_value=self.data['name_freq_table'])
@@ -80,29 +66,6 @@ class GraphInterface(Interface):
             dpg.start_dearpygui()
             dpg.destroy_context()
 
-    def draw_match_table(self, match_list: dict):
-        """
-        Функия для заполнения таблицы со всеми матчами
-
-        Аргументы
-        ----------
-        - match (dict) - словарь с данными, которые будут добавлены в таблицу 
-        - preffix - home или away 
-        """
-
-        for match in match_list:
-            with dpg.table_row(parent='main_table'):
-                dpg.add_text(match.get_date())
-                dpg.add_text(match.get_name_home())
-                dpg.add_text(match.get_points_home())
-                dpg.add_text(match.get_result())
-
-            with dpg.table_row(parent='main_table'):
-                dpg.add_text(match.get_date())
-                dpg.add_text(match.get_name_away())
-                dpg.add_text(match.get_points_away())
-                dpg.add_text(match.get_result())
-
     def draw_freq_table(self, freq_list):
         """
             Функция для заполнения таблицы со статистикой по каждой команде 
@@ -120,19 +83,6 @@ class GraphInterface(Interface):
                 dpg.add_text(freq_list[team_name_key]['all'])
                 dpg.add_text(freq_list[team_name_key]['percent'])
 
-    def save_match_list(self, match_list):
-        file_name = dpg.get_value('match_name')
-        # Если csvfile является файловым объектом, то его нужно открыть с параметром newline=''
-        with open(file_name, 'w', encoding='UTF-8', newline='') as f:
-            # Разделитель запятая не разбивает на колонки 
-            writer = csv.writer(f, delimiter=';')
-            writer.writerow(['Дата', "Дома", "Гости", "Очки дома", "Очки гостей", "Результат"])
-            # writer = csv.DictWriter(f, fieldnames = match_list[0].keys(), delimiter=';')
-            # writer.writeheader()
-
-            for match in match_list:
-                writer.writerow(match.values())
-
     def save_freq_list(self, freq_list):
         file_name = dpg.get_value('freq_name')
         # Если csvfile является файловым объектом, то его нужно открыть с параметром newline=''
@@ -149,7 +99,6 @@ class GraphInterface(Interface):
     def save_settings(self):
         my_dict = {
             'name_match_table': dpg.get_value('match_name'),
-            'name_freq_table': dpg.get_value('freq_name'),
         }
 
         with open('settings.json', 'w') as f:
@@ -160,7 +109,6 @@ class GraphInterface(Interface):
             text = f.read()
             if len(text) < 1:
                 return {
-                    'name_match_table': 'match_name.csv',
                     'name_freq_table': 'freq_name.csv',
                 }
             else:

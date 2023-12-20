@@ -2,7 +2,7 @@ import re
 
 from bs4 import BeautifulSoup
 
-from entity.match import MatchDTO, MatchBasketDTO
+from entity.match import MatchBasketDTO
 from exceptions.sel_flash_exceptions import NoDataExceptions
 from present_controll.data_cleaner import DataCleaner
 

@@ -1,3 +1,8 @@
 *.html
 *.csv 
-*.json 
+*.json
+*.crt
+/.venv
+/.idea
+/__pycache__
+

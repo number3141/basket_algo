@@ -1,5 +1,3 @@
-#!/usr/bin/python3.12
-
 from seleniumwire import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager

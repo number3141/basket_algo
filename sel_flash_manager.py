@@ -19,7 +19,7 @@ class SiteManager(DataManager):
 
     def start_program(self, user_data): 
         self.connect.start_connect()
-        res  = self.connect.get_content(user_data)
+        res = self.connect.get_content(user_data)
         self.connect.close_connect()
     
         data_cleaner = DataCleanerSelFlash(user_data, res)
@@ -29,11 +29,7 @@ class SiteManager(DataManager):
         finder_stat = SelFlashFindStatistic(clear_data)
         finder_stat.find_statistic_in_data()
 
-        self.match_list = finder_stat.get_match_list()
         self.freq_list = finder_stat.get_freq_list()
 
-    def get_match_list(self):
-        return self.match_list
-    
     def get_freq_list(self):
         return self.freq_list
