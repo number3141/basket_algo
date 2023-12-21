@@ -11,6 +11,12 @@ from present_controll.resource_connection import ResourseConnection
 
 # Соединение с сайтом 
 class HTMLConnection(ResourseConnection):
+    def __init__(self):
+        self.path = None
+
+    def set_path(self, path):
+        self.path = path
+
     def start_connect(self):
         install_service = ChromeService(ChromeDriverManager().install())
         self.driver = webdriver.Chrome(service=install_service)
@@ -30,13 +36,9 @@ class HTMLConnection(ResourseConnection):
 
     def get_need_html(self, it):
         """
-        Метод, нажимающий кнопку "Листать вниз", пока не найдёт матч с текстом it 
-
-        Аргументы
-        ----------
-        - it (str) - Текст, найдя который, функция вернёт разметку страницы 
+        Метод, нажимающий кнопку "Листать вниз", пока не найдёт матч с текстом it
         """
-        self.wait = WebDriverWait(self.driver, 7)
+        wait = WebDriverWait(self.driver, 7)
         self.driver.maximize_window()  # For maximizing window
         # Если на странице есть матч с датой пользователя 
 
@@ -48,14 +50,14 @@ class HTMLConnection(ResourseConnection):
         for _ in range((now_date - a).days // 10):
             try:
                 self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-                self.element = self.wait.until(
+                element = wait.until(
                     EC.element_to_be_clickable((By.CSS_SELECTOR, ".event__more--static"))
                 )
 
-                self.element.click()
+                element.click()
 
                 # Пока у элемента не пропадёт класс loading
-                self.wait.until_not(
+                wait.until_not(
                     EC.text_to_be_present_in_element_attribute(
                         (By.TAG_NAME, "body"), "class", "loading")
                 )

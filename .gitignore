@@ -2,8 +2,8 @@
 *.csv 
 *.json
 *.crt
-/.venv/
-/.idea/
-/__pycache__/
+.venv/
+.idea/
+__pycache__/
 sword authentication was removed on August 13, 2021.
 

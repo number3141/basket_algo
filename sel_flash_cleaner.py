@@ -2,13 +2,19 @@ import re
 
 from bs4 import BeautifulSoup
 
-from entity.match import MatchDTO, MatchBasketDTO
+from entity.match import MatchBasketDTO
 from exceptions.sel_flash_exceptions import NoDataExceptions
 from present_controll.data_cleaner import DataCleaner
 
 
-# Обрезание ненужного HTML
+def find_decimal_in_str(find_str):
+    reg = re.compile(r'\d{2}')
+    # Конверт в строку, потому что тип - ResultSet бьютифушный
+    quarter_points = reg.findall(str(find_str))
+    return int(*quarter_points)
 
+
+# Обрезание ненужного HTML
 class DataCleanerSelFlash(DataCleaner):
     def __init__(self, date_str, content) -> None:
         super().__init__()
@@ -16,7 +22,6 @@ class DataCleanerSelFlash(DataCleaner):
         self.day, self.month = [i if len(i) == 2 else f"0{i}" for i in self.date_list]
         self.dirty_data = BeautifulSoup(content, 'lxml')
 
-    #   ДОДЕЛАТЬ ВОЗВРАТ ЗНАЧЕНИЙ
     def cleaning_data(self) -> list:
         for dirty_match in self.cutter_content:
             date = dirty_match.find('div', class_='event__time').text
@@ -28,8 +33,8 @@ class DataCleanerSelFlash(DataCleaner):
             for part in [1, 2, 3, 4]:
                 point_home_in_part = dirty_match.select(f'.event__part--home' + f'.event__part--{part}')
                 point_away_in_part = dirty_match.select(f'.event__part--away' + f'.event__part--{part}')
-                points_home.append(self.findDecimalNumImStr(point_home_in_part))
-                points_away.append(self.findDecimalNumImStr(point_away_in_part))
+                points_home.append(find_decimal_in_str(point_home_in_part))
+                points_away.append(find_decimal_in_str(point_away_in_part))
 
             new_match = MatchBasketDTO()
             new_match.set_date(date)
@@ -47,28 +52,18 @@ class DataCleanerSelFlash(DataCleaner):
                      '05:30', '06:00', '06:30', '07:00', '07:30', '08:00', '08:30', '09:00', '09:30']
         stop_match = None
         for time in time_list:
-            stop_match = self.isMatchWithDate(time)
+            stop_match = self.is_match_with_date(time)
             if stop_match:
                 break
-
         if not stop_match:
             raise NoDataExceptions('Нет такой даты!')
 
-        print(stop_match)
         self.cutter_content = [stop_match] + list(stop_match.find_all_previous('div', class_='event__match'))
 
-    def isMatchWithDate(self, time):
+    def is_match_with_date(self, time):
         try:
-            stringForFind = f"{self.day}.{self.month}. {time}"
+            search_date = f"{self.day}.{self.month}. {time}"
             # parent из-за того, что возвращается строка, а нам нужен весь матч (родитель)
-            findMatch = self.dirty_data.find(string=stringForFind).parent.parent
-            return findMatch
-        except:
+            return self.dirty_data.find(string=search_date).parent.parent
+        except Exception:
             return False
-
-    def findDecimalNumImStr(self, findStr):
-        # Регулярная строка для поиска всех десятичных чисел 
-        self.reg = re.compile(r'\d{2}')
-        # Конверт в строку, потому что тип - ResultSet бьютифушный 
-        self.findPointInPart = self.reg.findall(str(findStr))
-        return int(*self.findPointInPart)

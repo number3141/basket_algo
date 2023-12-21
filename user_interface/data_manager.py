@@ -7,5 +7,9 @@ class DataManager(ABC):
         pass
 
     @abstractmethod
+    def set_connection(self, connection):
+        pass
+
+    @abstractmethod
     def get_freq_list(self):
         pass

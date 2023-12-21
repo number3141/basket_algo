@@ -2,7 +2,7 @@ from collections import Counter
 from entity.match import MatchDTO
 
 
-class Freq_List():
+class FreqList:
     def __init__(self) -> None:
         self.freq_list = {
             'name_team': {

@@ -5,9 +5,33 @@ import dearpygui.dearpygui as dpg
 from user_interface.interface import Interface
 
 
+def save_settings(name):
+    file_name = name.replace(' ', '_').replace(',', '_')
+    if '.csv' not in file_name:
+        file_name += '.csv'
+
+    my_dict = {
+        'name_freq_table': file_name,
+    }
+
+    with open('settings.json', 'w') as f:
+        json.dump(my_dict, f)
+
+
+def load_settings():
+    with open('settings.json', 'r') as f:
+        text = json.load(f)
+        if len(text) < 1:
+            return {
+                'name_freq_table': 'freq_name.csv',
+            }
+        else:
+            return text
+
+
 class GraphInterface(Interface):
     def __init__(self) -> None:
-        self.data = self.load_settings()
+        self.data = load_settings()
         dpg.create_context()
         dpg.create_viewport(title='Basket Parse', width=900, height=600, clear_color=(192, 192, 192, 255))
 
@@ -25,14 +49,20 @@ class GraphInterface(Interface):
                     # Кнопки поиска и ввода даты
                     with dpg.group():
                         dpg.add_text(default_value="Input Date")
-                        with dpg.group(horizontal=True):
-                            dpg.add_input_text(tag='date_user', no_spaces=True, decimal=True, width=100)
-                            dpg.add_button(label="Search",
-                                           callback=lambda x: start_programm(
-                                               user_data=dpg.get_value('date_user'),
-                                               type=dpg.get_value('type_connection')
-                                           ))
-                            dpg.add_button(label="Save FreqTable", callback=save_freq)
+                        dpg.add_group(tag='search_save_btn', horizontal=True)
+                        dpg.add_input_text(tag='date_user',
+                                           no_spaces=True,
+                                           decimal=True,
+                                           width=100,
+                                           parent='search_save_btn'
+                                           )
+                        dpg.add_button(label="Search",
+                                       parent='search_save_btn',
+                                       callback=lambda x: start_programm(
+                                           user_data=dpg.get_value('date_user'),
+                                           type_con=dpg.get_value('type_connection')
+                                       ))
+                        dpg.add_button(label="Save", callback=save_freq, parent='search_save_btn')
 
                     # Таблица частоты
                     with dpg.table(tag='freq_table'):
@@ -56,7 +86,9 @@ class GraphInterface(Interface):
                             tag='type_connection',
                             default_value='playwright')
 
-                    dpg.add_button(label='Save Settings', tag='bth_save_settings', callback=self.save_settings)
+                    dpg.add_button(label='Save Settings',
+                                   tag='bth_save_settings',
+                                   callback=lambda _: save_settings(dpg.get_value('freq_name')))
 
             dpg.bind_font("Default font")
             dpg.set_primary_window(window='main_wind', value=True)
@@ -96,25 +128,10 @@ class GraphInterface(Interface):
             for match in freq_list:
                 writer.writerow([match, *freq_list[match].values()])
 
-    def save_settings(self):
-        my_dict = {
-            'name_match_table': dpg.get_value('match_name'),
-        }
-
-        with open('settings.json', 'w') as f:
-            json.dump(my_dict, f)
-
-    def load_settings(self):
-        with open('settings.json', 'a+') as f:
-            text = f.read()
-            if len(text) < 1:
-                return {
-                    'name_freq_table': 'freq_name.csv',
-                }
-            else:
-                return json.load(f)
-
     def draw_text_in_board(self, message):
         with dpg.group(parent='main', tag='alert_group', horizontal=True):
             dpg.add_text(default_value=message)
-            dpg.add_button(label='Закрыть', callback=lambda x: dpg.delete_item(item='alert_group'))
+            dpg.add_button(
+                label='Закрыть',
+                callback=lambda x: dpg.delete_item(item='alert_group')
+            )

@@ -2,10 +2,10 @@
 Модуль сущности Match (Entity). Не знает о низших слоях 
 Класс, который позволяет рассчитать результат и вернуть его 
 """
-
 from abc import ABC, abstractmethod
 
-class MatchDTO():
+
+class MatchDTO:
     def __init__(self) -> None:
         self.date = None
         self.name_home = None
@@ -18,7 +18,7 @@ class MatchDTO():
         self.result = False
 
     def __repr__(self):
-        return  f"{self.name_home} - {self.name_away}"
+        return f"{self.name_home} - {self.name_away}"
     
     def set_result(self, result):
         self.result = result

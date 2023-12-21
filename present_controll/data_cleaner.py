@@ -4,6 +4,7 @@ from abc import ABC, abstractmethod
 class DataCleaner(ABC):
     def __init__(self) -> None:
         self.clear_data: list = list()
+        self.dirty_data = None
 
     @abstractmethod
     def cut_content(self):

@@ -5,12 +5,18 @@ from present_controll.resource_connection import ResourseConnection
 
 
 class PlayWrightConnection(ResourseConnection):
+    def __init__(self):
+        self.path = None
+
+    def set_path(self, path):
+        self.path = path
+
     def start_connect(self):
         # Запуск без контекстного менеджера с ручным .stop()
         p = sync_playwright().start()
         self.browser = p.firefox.launch(headless=False)
         self.page = self.browser.new_page()
-        self.page.set_default_timeout(15_000)
+        self.page.set_default_timeout(20_000)
         self.page.goto(self.path)
 
     def get_content(self, it):

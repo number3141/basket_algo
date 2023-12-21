@@ -1,10 +1,13 @@
 from abc import ABC, abstractmethod
 
-from entity.freq_list import Freq_List
+from entity.freq_list import FreqList
 
 
 class FindStatistic(ABC):
-    def __init__(self, data_no_check: list, freq_list: Freq_List = Freq_List()) -> None:
+    def __init__(self,
+                 data_no_check: list,
+                 freq_list: FreqList = FreqList()
+                 ) -> None:
         self.data_no_check = data_no_check
         self.freq_list = freq_list
 
