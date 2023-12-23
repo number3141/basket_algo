@@ -5,12 +5,6 @@ from present_controll.resource_connection import ResourseConnection
 
 
 class PlayWrightConnection(ResourseConnection):
-    def __init__(self):
-        self.path = None
-
-    def set_path(self, path):
-        self.path = path
-
     def start_connect(self):
         # Запуск без контекстного менеджера с ручным .stop()
         p = sync_playwright().start()

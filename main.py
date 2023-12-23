@@ -13,6 +13,7 @@ def create_connection(type_connection):
     elif type_connection == 'playwright':
         return PlayWrightConnection()
 
+
 class General:
     def __init__(self, data_manager: DataManager, interface: Interface) -> None:
         self.data_manager = data_manager

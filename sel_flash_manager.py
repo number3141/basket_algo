@@ -1,12 +1,7 @@
 from sel_flash_cleaner import DataCleanerSelFlash
-from sel_flash_connection import HTMLConnection
-from playwright_connection import PlayWrightConnection
 from sel_flash_usecase import SelFlashFindStatistic
 from user_interface.data_manager import DataManager
 from present_controll.resource_connection import ResourseConnection
-
-
-
 
 
 class WebDataManager(DataManager):
@@ -17,7 +12,6 @@ class WebDataManager(DataManager):
     def set_connection(self, connection: ResourseConnection) -> None:
         self.connect = connection
         self.connect.set_path('https://www.flashscorekz.com/basketball/usa/nba/results/')
-        # self.connect = create_connection(type_connection)('https://www.flashscorekz.com/basketball/usa/nba/results/')
 
     def start_program(self, user_data):
         self.connect.start_connect()

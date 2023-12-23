@@ -37,11 +37,11 @@ class DataCleanerSelFlash(DataCleaner):
                 points_away.append(find_decimal_in_str(point_away_in_part))
 
             new_match = MatchBasketDTO()
-            new_match.set_date(date)
-            new_match.set_name_home(name_home)
-            new_match.set_name_away(name_away)
-            new_match.set_points_home(points_home)
-            new_match.set_points_away(points_away)
+            new_match.date = date
+            new_match.name_home = name_home
+            new_match.name_away = name_away
+            new_match.points_home = points_home
+            new_match.points_away = points_away
             self.clear_data.append(new_match)
 
         return self.clear_data

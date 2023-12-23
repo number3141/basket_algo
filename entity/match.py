@@ -19,34 +19,7 @@ class MatchDTO:
 
     def __repr__(self):
         return f"{self.name_home} - {self.name_away}"
-    
-    def set_result(self, result):
-        self.result = result
-        
-    def set_winner(self, winner): 
-        self.winner = winner 
-        
-    def set_loser(self, loser): 
-        self.loser = loser 
 
-    def set_date(self, date): 
-        self.date = date
-
-    def set_name_home(self, name_home): 
-        self.name_home = name_home
-
-    def set_name_away(self, name_away):
-        self.name_away = name_away
-
-    def set_points_home(self, points_home): 
-        self.points_home = points_home
-
-    def set_points_away(self, point_away): 
-        self.points_away = point_away
-
-    def set_underhand(self, underhand):
-        self.underhand = underhand
-        
     def get_date(self):
         return self.date
         
@@ -93,13 +66,13 @@ class MatchBasketDTO(MatchDTO):
 
 class Match(ABC):
     def __init__(self) -> None:
-        self.data: MatchDTO = None
-        
-    def set_data(self, data): 
-        self.data = data
-        
-    def get_data(self):
-        return self.data
+        self.dto_data: MatchDTO = None
+
+    def set_dto_data(self, data):
+        self.dto_data = data
+
+    def get_dto_data(self):
+        return self.dto_data
         
     @abstractmethod
     def calc_result(self):

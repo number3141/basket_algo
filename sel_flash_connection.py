@@ -11,12 +11,6 @@ from present_controll.resource_connection import ResourseConnection
 
 # Соединение с сайтом 
 class HTMLConnection(ResourseConnection):
-    def __init__(self):
-        self.path = None
-
-    def set_path(self, path):
-        self.path = path
-
     def start_connect(self):
         install_service = ChromeService(ChromeDriverManager().install())
         self.driver = webdriver.Chrome(service=install_service)
