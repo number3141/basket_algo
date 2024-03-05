@@ -3,8 +3,8 @@
 *.json
 *.crt
 *.pyc
-venv/
-idea/
+.venv/
+.idea/
 __pycache__/
 sword authentication was removed on August 13, 2021.
 
