@@ -11,18 +11,19 @@ from present_controll.resource_connection import ResourseConnection
 
 # Соединение с сайтом 
 class HTMLConnection(ResourseConnection):
-    def start_connect(self):
+    def __enter__(self):
+        print('Сработал!')
         install_service = ChromeService(ChromeDriverManager().install())
         self.driver = webdriver.Chrome(service=install_service)
-
         self.driver.get(self.path)
-
         main_status = self.driver.requests[0].response.status_code
 
         while main_status != 200:
             self.driver.refresh()
 
-    def close_connect(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
         self.driver.quit()
 
     def get_content(self, date_str):
@@ -36,7 +37,7 @@ class HTMLConnection(ResourseConnection):
         self.driver.maximize_window()  # For maximizing window
         # Если на странице есть матч с датой пользователя 
 
-        replace_dot_date = f"{it}.2023".replace('.', ' ')
+        replace_dot_date = f"{it}".replace('.', ' ')
 
         a = datetime.strptime(replace_dot_date, "%d %m %Y")
         now_date = datetime.now()
@@ -62,8 +63,7 @@ class HTMLConnection(ResourseConnection):
 
 
 if __name__ == '__main__':
-    t = HTMLConnection('https://www.flashscorekz.com/basketball/usa/nba/results/')
-    t.start_connect()
-    print(t.get_content('04.11'))
-    t.close_connect()
+    with HTMLConnection('https://www.flashscorekz.com/basketball/usa/nba/results/') as con:
+        con.get_content('04.11')
+
     print('Завершил!')

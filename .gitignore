@@ -2,6 +2,7 @@
 *.csv 
 *.json
 *.crt
+*.pyc
 venv/
 idea/
 __pycache__/

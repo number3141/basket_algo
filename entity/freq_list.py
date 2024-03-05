@@ -34,15 +34,15 @@ class FreqList:
         return self.freq_list
 
     def add_match(self, match_dto: MatchDTO):
-        if match_dto.get_underhand():
-            self.all_mathes.update(Counter({match_dto.get_loser(): 1, match_dto.get_winner(): 1}))
+        if match_dto.underhand:
+            self.all_mathes.update(Counter({match_dto.loser: 1, match_dto.winner: 1}))
 
-            if match_dto.get_result() and match_dto.get_win_3():
-                self.win_3_matches.update(Counter({match_dto.get_loser(): 1, match_dto.get_winner(): 1}))
-            elif match_dto.get_result() and match_dto.get_win_4():
-                self.win_4_matches.update(Counter({match_dto.get_loser(): 1, match_dto.get_winner(): 1}))
+            if match_dto.result and match_dto.win_3:
+                self.win_3_matches.update(Counter({match_dto.loser: 1, match_dto.winner: 1}))
+            elif match_dto.result and match_dto.win_4:
+                self.win_4_matches.update(Counter({match_dto.loser: 1, match_dto.winner: 1}))
             else:
-                self.lose_mathes.update(Counter({match_dto.get_loser(): 1, match_dto.get_winner(): 1}))
+                self.lose_mathes.update(Counter({match_dto.loser: 1, match_dto.winner: 1}))
 
 
 

@@ -8,4 +8,5 @@ class SelFlashFindStatistic(FindStatistic):
             new_match = MatchBasket()
             new_match.set_dto_data(match_dto)
             new_match.calc_result()
+            print(new_match)
             self.freq_list.add_match(new_match.get_dto_data())

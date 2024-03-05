@@ -14,11 +14,10 @@ class WebDataManager(DataManager):
         self.connect.set_path('https://www.flashscorekz.com/basketball/usa/nba/results/')
 
     def start_program(self, user_data):
-        self.connect.start_connect()
-        res = self.connect.get_content(user_data)
-        self.connect.close_connect()
+        with self.connect as con:
+            response = con.get_content(user_data)
 
-        data_cleaner = DataCleanerSelFlash(user_data, res)
+        data_cleaner = DataCleanerSelFlash(user_data, response)
         data_cleaner.cut_content()
         clear_data = data_cleaner.cleaning_data()
 

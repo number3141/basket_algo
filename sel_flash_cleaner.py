@@ -19,7 +19,7 @@ class DataCleanerSelFlash(DataCleaner):
     def __init__(self, date_str, content) -> None:
         super().__init__()
         self.date_list = date_str.split('.')
-        self.day, self.month = [i if len(i) == 2 else f"0{i}" for i in self.date_list]
+        self.day, self.month, self.year = [i if len(i) == 2 else f"0{i}" for i in self.date_list]
         self.dirty_data = BeautifulSoup(content, 'lxml')
 
     def cleaning_data(self) -> list:
